@@ -1,4 +1,5 @@
 // Init Server http
+const cors = require('cors')
 const express = require('express');
 const app = express();
 
@@ -25,6 +26,9 @@ setIntervalAsync(generator, 350000);
 //                  MIDDLEWARES
 //////////////////////////////////////////////////////////
 
+// Cors
+app.use(cors())
+
 app.use(express.json({ limit: '10mb', extended: true }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
@@ -47,16 +51,5 @@ app.use(logErrors);
 app.use(wrapErrors);
 app.use(errorHandler);
 
-// Cors
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method'
-  );
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-  res.header('Allow', 'GET, POST, PATCH, OPTIONS, PUT, DELETE');
-  next();
-});
 
 module.exports = app

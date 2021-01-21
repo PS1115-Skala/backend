@@ -1,4 +1,4 @@
-\c "reserva";
+-- \c "reserva";
 -- Cargamos los datos en tablas
 -- Tabla de usuario
 
