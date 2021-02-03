@@ -83,7 +83,7 @@ class ReservationController {
     const { room, semanas } = req.body.shift()
     const schedules = req.body
     try {
-      if (!schedules.lenght) res.status(403).json({ error: 'Debe llenar un horario a solicitar reserva' });
+      if (!schedules.length) res.status(403).json({ error: 'Debe llenar un horario a solicitar reserva' });
       if (semanas == 'todas') {
         for (let semana = 1; semana < 13; semana++) {
           await reservationService.deleteScheduleFromAdmin(
