@@ -23,7 +23,8 @@ class ItemsService {
       const ItemsNoOwned = await pool.query(query);
       return ItemsNoOwned;
     } else {
-      return idsItems;
+      const allItems = await this.getItems()
+      return allItems;
     }
   }
 

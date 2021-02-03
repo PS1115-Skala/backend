@@ -47,7 +47,7 @@ class ReservationsServices {
     // Guardo los asignations que existen que existen en esa <room> para obtener los subjects y compararlos con los que se quieren eliminar
     let asigInRoom = await this.getReservationByRoom(room);
     asigInRoom = asigInRoom.rows;
-    for (let index = 1; index < horarios.length; index++) {
+    for (let index = 0; index < horarios.length; index++) {
       // Obtego el dia, hora, materia, del body (cada elemento req.body[x] con x > 0 representa una hora en Z dia )
       const horario = horarios[index];
       const { dia, hora, subject } = horario;

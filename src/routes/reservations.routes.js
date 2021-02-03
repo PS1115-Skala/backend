@@ -22,4 +22,7 @@ router.get("/reservas/:reservaID/horario", reservationController.asignationSched
 /* [TESTED] Crear una reserva (se crea por debajo la solicitud y se acepta automaticamente para ser una reserva) */
 router.post("/crear/reserva", reservationController.createNewReservation);
 
+router.post("/eliminar/reserva", reservationController.deleteReservation);
+
+
 module.exports = router

@@ -1,5 +1,7 @@
 const RoomRequestService = require('../services/roomRequest.service');
+const RoomService = require('../services/rooms.service');
 const roomRequestService = new RoomRequestService();
+const roomService = new RoomService();
 
 // Time/Date module
 const moment = require('moment');
@@ -53,7 +55,7 @@ class RoomRequestController {
       try {
         if (status == 'A') {
           try {
-            await roomRequestService.createSalaFromRequest(id, date);
+            await roomService.createSalaFromRequest(id, date);
           } catch (err) {
             next(err);
           }
