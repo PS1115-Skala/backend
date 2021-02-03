@@ -79,6 +79,53 @@ class ReservationController {
     }
   }
 
+  async deleteReservation(req, res, next) {
+    const { room, semanas } = req.body.shift()
+    const schedules = req.body
+    try {
+      if (!schedules.lenght) res.status(403).json({ error: 'Debe llenar un horario a solicitar reserva' });
+      if (semanas == 'todas') {
+        for (let semana = 1; semana < 13; semana++) {
+          await reservationService.deleteScheduleFromAdmin(
+            semana,
+            schedules,
+            room
+          );
+        }
+      } else if (semanas == 'pares') {
+        for (let semana = 2; semana < 13; semana += 2) {
+          await reservationService.deleteScheduleFromAdmin(
+            semana,
+            schedules,
+            room
+          );
+        }
+      } else if (semanas == 'impares') {
+        for (let semana = 1; semana < 13; semana += 2) {
+          await reservationService.deleteScheduleFromAdmin(
+            semana,
+            schedules,
+            room
+          );
+        }
+      } else if (Number.isInteger(semanas) && semanas > 0 && semanas < 13) {
+        await reservationService.deleteScheduleFromAdmin(
+          semanas,
+          schedules,
+          room
+        );
+      } else {
+        res.status(403).json({
+          error: 'No se esta especificando un tipo de semana correctamente'
+        });
+      }
+      res.status(200).json({ message: 'Reservas eliminadas' });
+    } catch (err) {
+      res.status(500).json({ error: 'Ocurrio un error en el servidor' });
+      next(err);
+    }
+  }
+
   // POST create a new reservation (only admin) (in background this create a reservation request and automaticaly is accepted
   // this is because we need values to generate metrics/charts)
   async createNewReservation(req, res, next) {
