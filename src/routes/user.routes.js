@@ -2,6 +2,7 @@ const { Router } = require('express');
 const router = Router();
 
 const UserController = require('../controllers/users.controller');
+const auth = require('../middleware/auth');
 const userController = new UserController();
 
 /*
@@ -35,16 +36,16 @@ const userController = new UserController();
  */
 
 /* [TESTED] Obtener un usuario de la base de datos. */
-router.get('/usuario/:userId', userController.getUser);
+router.get('/usuario/:userId', auth, userController.getUser);
 
 /* [TESTED] Obtener todos los usuarios */
-router.get('/usuarios', userController.getUsers);
+router.get('/usuarios', auth, userController.getUsers);
 
 /* [TESTED] Obtener todos los usuarios que son laboratorio docente */
-router.get('/usuarios/admin', userController.getAdmins);
+router.get('/usuarios/admin', auth, userController.getAdmins);
 
 /* [TESTED] Obtener todos los usuarios que son profesor o estudiante */
-router.get('/usuarios/profesor', userController.getStandardUsers);
+router.get('/usuarios/profesor', auth, userController.getStandardUsers);
 
 /* Registrar un nuevo usuario */
 router.post('/signup', userController.signUp);

@@ -2,6 +2,7 @@ const { Router } = require('express');
 const router = Router();
 
 const SalaController = require('../controllers/salas.controller');
+const auth = require('../middleware/auth');
 const salasController = new SalaController();
 
 /*
@@ -29,21 +30,21 @@ router.get('/salas/admin/:userId', salasController.adminRooms);
 router.get('/salas/:salaId/picture', salasController.getImageRoom);
 
 /* [TESTED] Eliminar un item de una sala en el trimestre actual */
-router.delete('/salas/:salaId/:itemId', salasController.deleteRoomItem);
+router.delete('/salas/:salaId/:itemId', auth, salasController.deleteRoomItem);
 
 /* [TESTED] Actualizar la cantidad de un item de una sala en el trimestre actual */
-router.put('/salas/:salaId/:itemId', salasController.updateRoomItems);
+router.put('/salas/:salaId/:itemId', auth, salasController.updateRoomItems);
 
 /* [TESTED] Actualizar descripcion nombre y status de una sala */
-router.put('/salas/:salaId', salasController.updateRoom);
+router.put('/salas/:salaId', auth, salasController.updateRoom);
 
 /* [TESTED] Crear una nueva sala */
-router.post('/salas/crear', salasController.createRoom);
+router.post('/salas/crear', auth, salasController.createRoom);
 
 /* [TESTED] Agregar un item a la sala para el trimestre actual */
-router.post('/salas/:salaId/:itemId', salasController.addRoomItem);
+router.post('/salas/:salaId/:itemId', auth, salasController.addRoomItem);
 
 /* Subir una nueva imagen */
-router.post('/salas/:salaId/picture/new', salasController.uploadRoomImage);
+router.post('/salas/:salaId/picture/new', auth, salasController.uploadRoomImage);
 
 module.exports = router;

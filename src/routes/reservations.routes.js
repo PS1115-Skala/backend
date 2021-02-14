@@ -2,6 +2,7 @@ const { Router } = require('express');
 const router = Router();
 
 const ReservationController = require('../controllers/reservations.controller');
+const auth = require('../middleware/auth');
 const reservationController = new ReservationController;
 
 /*
@@ -20,9 +21,9 @@ router.get("/reservas/:roomId", reservationController.asignationsFromRoom);
 router.get("/reservas/:reservaID/horario", reservationController.asignationSchedule);
 
 /* [TESTED] Crear una reserva (se crea por debajo la solicitud y se acepta automaticamente para ser una reserva) */
-router.post("/crear/reserva", reservationController.createNewReservation);
+router.post("/crear/reserva", auth, reservationController.createNewReservation);
 
-router.post("/eliminar/reserva", reservationController.deleteReservation);
+router.post("/eliminar/reserva", auth, reservationController.deleteReservation);
 
 
 module.exports = router

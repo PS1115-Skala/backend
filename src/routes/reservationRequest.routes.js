@@ -2,6 +2,7 @@ const { Router } = require('express');
 const router = Router();
 
 const ReservationRequestController = require('../controllers/reservationRequest.controller')
+const auth = require('../middleware/auth');
 const reservationReqController = new ReservationRequestController;
 
 /*
@@ -25,30 +26,35 @@ router.get(
 /* [TESTED] Obtener todas las solicitudes hechas por un usuario */
 router.get(
   '/solicitudes/usuario/:userId',
+  auth,
   reservationReqController.userReservationsReqs
 );
 
 /* [TESTED] Obtener todas las solicitudes correspondientes a un laboratorio. */
 router.get(
   '/solicitudes/admin/:labId',
+  auth,
   reservationReqController.adminReservationsRequest
 );
 
 /* [TESTED] Crear una solicitud reserva */
 router.post(
   '/crear/solicitudes/reserva',
+  auth,
   reservationReqController.createReservationRequest
 );
 
 /* [TESTED] Actualizar (Aceptar/rechazar) una solicitud */
 router.put(
   '/solicitudes/reserva/:requestId',
+  auth,
   reservationReqController.manageReservationReq
 );
 
 /* [TESTED] Eliminar solicitud de reserva de una sala */
 router.delete(
   '/eliminar/solicitud/reserva/:idResquest',
+  auth,
   reservationReqController.deleteReservationReq
 );
 

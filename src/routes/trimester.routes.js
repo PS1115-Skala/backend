@@ -2,6 +2,7 @@ const { Router } = require('express');
 const router = Router();
 
 const TrimesterController = require('../controllers/trimester.controller');
+const auth = require('../middleware/auth');
 const trimesterController = new TrimesterController();
 
 /*
@@ -11,12 +12,12 @@ const trimesterController = new TrimesterController();
  */
 
 /* DAEMON autoUpdate Trimester (used by script updateTrimester) */
-router.get('/actualizarTrimestre', trimesterController.autoUpdateTrim);
+router.get('/actualizarTrimestre',auth, trimesterController.autoUpdateTrim);
 
 /* [TESTED] GET actual trimester */
 router.get('/trimestre/ultimo', trimesterController.getLastTrimester);
 
 /* [TESTED] PUT update actual trimester  */
-router.put('/trimestre/:Id', trimesterController.updateTrimester);
+router.put('/trimestre/:Id', auth, trimesterController.updateTrimester);
 
 module.exports = router;

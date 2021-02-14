@@ -1,7 +1,9 @@
 const { Router } = require('express');
-const router = Router()
 
 const ItemController = require('../controllers/items.controller');
+const auth = require('../middleware/auth');
+
+const router = Router()
 const itemController = new ItemController;
 
 /*
@@ -17,12 +19,12 @@ router.get("/items", itemController.allItems);
 router.get("/items/:itemId", itemController.specificItem);
 
 /* [TESTED] Crear un item */
-router.post("/item", itemController.createItem);
+router.post("/item", auth, itemController.createItem);
 
 /* [TESTED] Actualizar un item */
-router.put("/items/:itemId", itemController.updateItem);
+router.put("/items/:itemId", auth, itemController.updateItem);
 
 /* [TESTED] Eliminar un item */
-router.delete("/items/:itemId", itemController.deleteItem);
+router.delete("/items/:itemId", auth, itemController.deleteItem);
 
 module.exports = router;
