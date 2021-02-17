@@ -29,17 +29,21 @@ class UsersService {
     return profesores || [];
   }
 
-  async registerUser(usbId, name, email, type, chief, clave) {
-    const claveEncrypt = await auth.encryptPassword(clave);
-
-    let query = `INSERT into usuario (id,name, email, type, is_active,chief, clave)
-        values('${usbId}', '${name}', '${email}', ${type}, 'true', '${chief}', '${claveEncrypt}')`;
+  async registerUser(usbId, name, email, type) {
+    let query = `INSERT into usuario (id,name, email, type, is_active, is_verified, chief)
+        values('${usbId}', '${name}', '${email}', ${type}, 0, false '${usbId}')`;
 
     await pool.query(query);
-
     const token = await auth.createToken(usbId, type);
-
     return token;
+  }
+
+  async verifyUser(usbId, clave) {
+    const claveEncrypt = await auth.encryptPassword(clave);
+    let query = `UPDATE usuario SET clave = '${claveEncrypt}', is_active = '1', is_verified='true' WHERE id = ${usbId}`;
+
+    const user_updated = await pool.query(query);
+    return user_updated;
   }
 
   async loginUser(usbId, clave) {

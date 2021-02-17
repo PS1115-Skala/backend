@@ -162,71 +162,71 @@ insert into subject(id, dept, name) values
 /*Rellenamos la tabla usuario*/
 /*Type 0000 departamento, 1111 estudiante, 2222 profesor, 3333 laboratorio, 4444 laboratorio master*/
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('12-10273', 'Jesus Kauze', '12-10273@usb.ve', 1111, false,0, '12-10273');
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('15-10123', 'Jose Barrera', '15-10123@usb.ve', 1111, false,0, '15-10123');
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('13-11341', 'David Segura', '13-11341@usb.ve', 1111, false,0, '13-11341');
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('15-10611', 'Carlos Gonzalez', '15-10611@usb.ve', 1111, false,0, '15-10611');
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('15-11523', 'Neil Villamizar', '15-11523@usb.ve', 1111, true,1, '15-11523');
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('labf', 'Laboratorio F', 'labf@usb.ve', 4444, true,1, 'labf');
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('cchang', 'Carolina Chang', 'cchang@usb.ve', 2222, true,1, 'labf');
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('eduardo', 'Eduardo Blanco', 'eduardo@usb.ve', 2222, true,1, 'labf');
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('mgoncalves', 'Marlene Goncalves', 'mgoncalves@usb.ve', 2222, true,1, 'labf');
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('mcorniel', 'Marla Corniel', 'mcornie@usb.ve', 2222, true,1, 'labf');
 --------------------------------------------------------------------
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('ldac', 'Laboratorio Docente de Aulas Computarizadas', 'ldac@usb.ve', 3333, true,1, 'cchang');
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('ldc', 'Laboratorio Docente de Computación', 'ldc@usb.ve', 3333, true,1, 'eduardo');
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('lamec', 'Laboratorio de Matemáticas y Estadística Computacional', 'lamec@usb.ve', 3333, true,1, 'labf');
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('laiac', 'Laboratorio de Aprendizaje de Idiomas Asistido por Computador', 'laiac@usb.ve', 3333, false,0, 'labf');
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('lcgm', 'Laboratorio de Computación Gráfica y Multimedia', 'lcgm@usb.ve', 3333, false,0, 'labf');
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('ldcp', 'Laboratorio de Ciencias Políticas', 'ldcp@usb.ve', 3333, true,1, 'labf');
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('et', 'Laboratorio de Estudios Tecnologicos', 'et@usb.ve', 3333, true,1, 'labf');
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('lgu', 'Laboratorio de Geomatica Urbana', 'lgu@usb.ve', 3333, true,1, 'labf');
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('lie', 'Laboratorio de Informática Educativa', 'lie@usb.ve', 3333, true,1, 'labf');
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('bwl', 'Laboratorio de Redes y Bases de Datos', 'bwl@usb.ve', 3333, false,0, 'mgoncalves');
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('CI', 'Departamento de Computación', 'dci@usb.ve', 0000, true,1, 'CI');
 
-insert into usuario(id,name,email,type,isVerified,is_active, chief) values
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('CO', 'Departamento de Cómputo Científico y Estadística', 'dept-co@usb.ve', 0000, true,1, 'CI');
 
 /*Rellenamos la tabla de room*/

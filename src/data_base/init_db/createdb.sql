@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS usuario(
     email VARCHAR(64) NOT NULL,
     type SMALLINT NOT NULL,
     is_active SMALLINT NOT NULL, --0 inactive, 1 active, 2 banned
-    isVerified BOOLEAN NOT NULL, --0 no, 1 si
+    is_verified BOOLEAN NOT NULL, --0 no, 1 si
     chief VARCHAR(64) NOT NULL, --Labf es su propio jefe
     FOREIGN KEY (chief) REFERENCES usuario(id)
 );
