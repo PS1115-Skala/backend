@@ -41,7 +41,8 @@ CREATE TABLE IF NOT EXISTS usuario(
     clave VARCHAR(200),
     email VARCHAR(64) NOT NULL,
     type SMALLINT NOT NULL,
-    is_active BOOLEAN NOT NULL, --En caso de que un lab se disuelva o salga del sistema
+    is_active SMALLINT NOT NULL, --0 inactive, 1 active, 2 banned
+    isVerified BOOLEAN NOT NULL, --0 no, 1 si
     chief VARCHAR(64) NOT NULL, --Labf es su propio jefe
     FOREIGN KEY (chief) REFERENCES usuario(id)
 );
