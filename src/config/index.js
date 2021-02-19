@@ -10,4 +10,4 @@ const config = {
     password: process.env.PASSWORD || 1234
 };
 
-module.exports = { config };
+module.exports = config;
