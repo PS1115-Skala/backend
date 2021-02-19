@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS usuario(
     name VARCHAR(64) NOT NULL,
     clave VARCHAR(200),
     email VARCHAR(64) NOT NULL,
-    type SMALLINT NOT NULL,
+    type VARCHAR(2) NOT NULL,
     is_active SMALLINT NOT NULL, --0 inactive, 1 active, 2 banned
     is_verified BOOLEAN NOT NULL, --0 no, 1 si
     chief VARCHAR(64) NOT NULL, --Labf es su propio jefe
