@@ -163,7 +163,7 @@ insert into subject(id, dept, name) values
 /*Type 0000 departamento, 1111 estudiante, 2222 profesor, 3333 laboratorio, 4444 laboratorio master*/
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief, clave) values
-('12-10273', 'Jesus Kauze', '12-10273@usb.ve', 1111, false,0, '12-10273', '$2a$10$c8tYxQVE0.HHu9XVKSam.uarelO2Iqo6MBU1Wvu4mR5jkyvIpAuU.');
+('12-10273', 'Jesus Kauze', '12-10273@usb.ve', 1111, true,1, '12-10273', '$2a$10$c8tYxQVE0.HHu9XVKSam.uarelO2Iqo6MBU1Wvu4mR5jkyvIpAuU.');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('15-10123', 'Jose Barrera', '15-10123@usb.ve', 1111, false,0, '15-10123');
@@ -175,10 +175,10 @@ insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('15-10611', 'Carlos Gonzalez', '15-10611@usb.ve', 1111, false,0, '15-10611');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief, clave) values
-('labf', 'Laboratorio F', 'labf@usb.ve', 4444, false, 0, 'labf', '$2a$10$c8tYxQVE0.HHu9XVKSam.uarelO2Iqo6MBU1Wvu4mR5jkyvIpAuU.');
+('labf', 'Laboratorio F', 'labf@usb.ve', 4444, true, 1, 'labf', '$2a$10$c8tYxQVE0.HHu9XVKSam.uarelO2Iqo6MBU1Wvu4mR5jkyvIpAuU.');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief, clave) values
-('cchang', 'Carolina Chang', 'cchang@usb.ve', 2222, false, 0, 'labf', '$2a$10$c8tYxQVE0.HHu9XVKSam.uarelO2Iqo6MBU1Wvu4mR5jkyvIpAuU.');
+('cchang', 'Carolina Chang', 'cchang@usb.ve', 2222, true, 1, 'labf', '$2a$10$c8tYxQVE0.HHu9XVKSam.uarelO2Iqo6MBU1Wvu4mR5jkyvIpAuU.');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('eduardo', 'Eduardo Blanco', 'eduardo@usb.ve', 2222, false, 0, 'labf');
@@ -187,7 +187,7 @@ insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('mgoncalves', 'Marlene Goncalves', 'mgoncalves@usb.ve', 2222, false, 0, 'labf');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief, clave) values
-('mcorniel', 'Marla Corniel', 'mcornie@usb.ve', 2222, false, 0, 'labf', '$2a$10$c8tYxQVE0.HHu9XVKSam.uarelO2Iqo6MBU1Wvu4mR5jkyvIpAuU.');
+('mcorniel', 'Marla Corniel', 'mcornie@usb.ve', 2222, true, 1, 'labf', '$2a$10$c8tYxQVE0.HHu9XVKSam.uarelO2Iqo6MBU1Wvu4mR5jkyvIpAuU.');
 --------------------------------------------------------------------
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
