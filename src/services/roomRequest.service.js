@@ -8,7 +8,7 @@ class RoomRequestService {
     const valuesChief = [userId];
     let queryChief = `SELECT chief, type from usuario where usuario.id=$1`;
     const owner = await pool.query(queryChief, valuesChief); //Obtenemos el jefe de laboratorio correspondiente
-    if (owner.rows[0].type != 3333 || room_id == undefined) {
+    if (owner.rows[0].type != 'L' || room_id == undefined) {
       return null;
     }
     const values = [

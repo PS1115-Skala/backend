@@ -18,13 +18,13 @@ class UsersService {
   }
 
   async getAdminUsers() {
-    let query = `SELECT * FROM usuario WHERE type = 3333`;
+    let query = `SELECT * FROM usuario WHERE type = 'L'`;
     const requestsUsers = await pool.query(query);
     return requestsUsers || [];
   }
 
   async getProfesor() {
-    let query = `SELECT * FROM usuario WHERE type = 1111 or type = 2222`;
+    let query = `SELECT * FROM usuario WHERE type = 'U' or type = 'P'`;
     const profesores = await pool.query(query);
     return profesores || [];
   }
