@@ -1,4 +1,4 @@
-const SubjectsService = require('../services/subjects.service');
+const SubjectsService = require('../../services/subjects.service');
 const subjectsService = new SubjectsService();
 
 /*
@@ -14,14 +14,14 @@ const subjectsService = new SubjectsService();
     Controller
 */
 class SubjectsController {
-  async getSubjects(req, res, next) {
-    try {
-      const subjects = await subjectsService.getSubjects();
-      res.status(200).send(subjects.rows);
-    } catch (err) {
-      next(err);
-    }
-  }
+	async getSubjects(req, res, next) {
+		try {
+			const subjects = await subjectsService.getSubjects();
+			res.status(200).send(subjects.rows);
+		} catch (err) {
+			next(err);
+		}
+	}
 }
 
 module.exports = SubjectsController;

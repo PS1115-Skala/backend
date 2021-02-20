@@ -18,8 +18,8 @@ router.get('/metrics/totalreservas', metricController.getReservationsQuantity);
 
 /* Obtener la variaciones de los items desde un trimestre a otro especificado */
 router.get(
-  '/metrics/variacionitems/:RoomId',
-  metricController.getItemsVarations
+	'/metrics/variacionitems/:RoomId',
+	metricController.getItemsVarations
 );
 
 module.exports = router;
