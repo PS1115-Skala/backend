@@ -87,7 +87,7 @@ class SalaController {
 		const salaId = req.params.salaId;
 		try {
 			res.status(200).sendFile(
-				path.join(__dirname + `/../media/${salaId}.jpg`),
+				path.join(__dirname + `/../../media/${salaId}.jpg`),
 				// si falla, por default deja la img default
 				function(err) {
 					if (err) {

@@ -1,7 +1,7 @@
 //Require the dev-dependencies
 let chai = require('chai');
 let chaiHttp = require('chai-http');
-let app = require('../index');
+const { app } = require('../api');
 var expect = chai.expect;
 
 chai.use(chaiHttp);
