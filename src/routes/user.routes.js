@@ -47,9 +47,12 @@ router.get('/usuarios/admin', userController.getAdmins);
 router.get('/usuarios/profesor', userController.getStandardUsers);
 
 /* Registrar un nuevo usuario */
-router.post('/signup', userController.signUp);
+router.post('/usario/signup', userController.signUp);
 
 /* Inicio de sesion */
 router.post('/signin', userController.signIn);
+
+/* UsbId details */
+router.post('/usuario/userInfo', userController.userInfo);
 
 module.exports = router;
