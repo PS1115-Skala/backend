@@ -50,7 +50,7 @@ router.get('/usuarios/profesor', userController.getStandardUsers);
 router.post('/usario/signup', userController.signUp);
 
 /* Inicio de sesion */
-router.post('/signin', userController.signIn);
+router.post('/usuario/signin', userController.signIn);
 
 /* UsbId details */
 router.post('/usuario/userInfo', userController.userInfo);

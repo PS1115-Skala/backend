@@ -114,15 +114,16 @@ class UserController {
   // POST loggin user
   async signIn(req, res, next) {
     try {
+      // Clave del sistema no del CAS
       const { usbId, clave } = req.body;
       const login = await usersService.loginUser(usbId, clave);
       if (login == 0) {
-        res.status(404).send('Usuario no registrado en la base de datos');
-      } else if (login == 1) {
-        res.status(403).send('Clave incorrecta');
-      } else {
-        res.json({ auth: true, token: login });
+        return res.status(404).json({ error: `Usuario no registrado en la base de datos` });
       }
+      if (login == 1) {
+        return res.status(404).json({ error:'Clave incorrecta' });
+      }
+      res.json({ auth: true, token: login });
     } catch (err) {
       res.status(500).json({ error: `Hubo un error en el servidor` });
       next(err);
@@ -181,7 +182,7 @@ class UserController {
       res.json(userResponse);
     } catch (err) {
       if (err === 'Usuario ya se encuentra activo') {
-        res.status(400).json({ error: err });
+        return res.status(400).json({ error: err });
       }
       res.status(500).json({ error: `Hubo un error en el servidor` });
       next(err);
