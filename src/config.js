@@ -1,4 +1,9 @@
+const assert = require('assert');
 require('dotenv').config();
+
+const envs = ['production', 'development', 'staging', 'testing'];
+const { NODE_ENV } = process.env;
+assert(envs.includes(NODE_ENV), `${NODE_ENV} is not a valid env ${envs}.`);
 
 const config = {
 	dev: process.env.NODE_ENV || 'development',
