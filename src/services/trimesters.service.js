@@ -1,8 +1,6 @@
 const pool = require('../data_base/pgConnect');
 
 class TrimestersService {
-	//  ********************* SERVICIOS DE TRIMESTRE  *********************
-
 	async getActualTrim() {
 		const sql = 'SELECT * FROM trimester ORDER BY finish DESC LIMIT 1';
 		const trim = await pool.query(sql);
@@ -17,19 +15,13 @@ class TrimestersService {
 
 	async updateTrim(id, start, finish) {
 		let query;
-
-		let dates = await this.getActualTrim();
-		let strt = dates.rows[0].start.toISOString().substring(0, 10);
-		let fnsh = dates.rows[0].finish.toISOString().substring(0, 10);
-		if (!start && finish > strt) {
-			query = `UPDATE trimester SET finish = '${finish}' WHERE id = '${id}'`;
-		} else if (!finish && fnsh > start) {
-			query = `UPDATE trimester SET start = '${start}' WHERE id = '${id}'`;
-		} else if (finish > start) {
-			query = `UPDATE trimester SET start = '${start}', finish = '${finish}' WHERE id = '${id}'`;
-		} else {
-			return null;
-		}
+		const dates = await this.getActualTrim();
+		const strt = dates.rows[0].start.toISOString().substring(0, 10);
+		const fnsh = dates.rows[0].finish.toISOString().substring(0, 10);
+		if (!start && finish > strt) query = `UPDATE trimester SET finish = '${finish}' WHERE id = '${id}'`;
+		else if (!finish && fnsh > start) query = `UPDATE trimester SET start = '${start}' WHERE id = '${id}'`;
+		else if (finish > start) query = `UPDATE trimester SET start = '${start}', finish = '${finish}' WHERE id = '${id}'`;
+		else return null;
 		const updateTrim = await pool.query(query);
 		return updateTrim;
 	}
