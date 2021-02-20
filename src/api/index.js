@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const timeout = require('connect-timeout');
 const express = require('express');
 const helmet = require('helmet');
-// const routes = require('./routes');
+// const routes = require('./routes'); // API v2.
 const {
 	logErrors,
 	wrapErrors,
@@ -32,7 +32,7 @@ app.use(helmet());
 app.use(express.json({ limit: '10mb', extended: true }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-// app.use('/api', routes);
+// app.use('/api/v2', routes); // API v2.
 reservACapi(app);
 
 app.use(notFoundHandler);
