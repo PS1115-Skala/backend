@@ -1,11 +1,13 @@
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 class authControl {
 
 	async encryptPassword(password) {
 		const salt = await bcrypt.genSalt(10);
-		return bcrypt.hash(password, salt);
+		return bcrypt.hash(password, salt).catch(err => {
+			throw new Error('El pepe error', err);
+		});
 	}
 
 	async comparePassword(password1, password2) {
@@ -15,7 +17,7 @@ class authControl {
 	async createToken(id, type) {
 		const token = jwt.sign({ id: id, type: type }, 'mysecretkey', {
 			expiresIn: 60 * 60
-		})
+		});
 		return token;
 	}
 
