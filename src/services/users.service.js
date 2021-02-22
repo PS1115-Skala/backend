@@ -29,12 +29,16 @@ class UsersService {
     return profesores || [];
   }
 
-  async registerUser(usbId, name, email, type, chief, clave) {
-    const claveEncrypt = await auth.encryptPassword(clave);
-
-    let query = `INSERT into usuario (id,name, email, type, is_active,chief, clave)
-        values('${usbId}', '${name}', '${email}', ${type}, 'true', '${chief}', '${claveEncrypt}')`;
-
+  async registerUser(usbId, name, email, type, clave) {
+    let query;
+    if (clave != null){
+      const claveEncrypt = await auth.encryptPassword(clave);
+      query = `INSERT into usuario (id, name, clave, email, type, is_active, is_verified, chief)
+        values('${usbId}', '${name}', '${claveEncrypt}', '${email}', '${type}', 1, true, '${usbId}')`;
+    }else{
+      query = `INSERT into usuario (id,name, email, type, is_active, is_verified, chief)
+        values('${usbId}', '${name}', '${email}', '${type}', 0, false, '${usbId}')`;
+    }
     await pool.query(query);
 
     const token = await auth.createToken(usbId, type);
@@ -60,6 +64,34 @@ class UsersService {
       return token;
     }
   }
+
+  userTypeToHumanLabel = (type) => USER_TYPES[type];
+
+  getUserType = (uuid, userType) => {
+    if (userType === 'U' || userType === 'P') {
+      return userType;
+    }
+    if (uuid.includes('labf')) {
+      return 'L';
+    }
+    if (uuid.includes('lab')) {
+      return null;
+    }
+  };
+
+  checkOrCreateUser = async (usbId, name, email, type, clave) => {
+    try {
+      const userExists = await this.getUser(usbId);
+      // El usuario no existe y hay que crearlo
+      if (userExists.rows.length == 0) {
+        await this.registerUser(usbId, name, email, type, clave);
+      } else if (userExists.rows[0].is_verified == true) {
+        throw 'Usuario ya se encuentra activo';
+      }
+    } catch (err) {
+      throw err;
+    }
+  };
 }
 
 module.exports = UsersService;

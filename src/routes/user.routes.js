@@ -52,4 +52,7 @@ router.post('/signup', userController.signUp);
 /* Inicio de sesion */
 router.post('/signin', userController.signIn);
 
+/* Crear usuario con clave definida */
+router.post('/usuario/create', userController.createUser);
+
 module.exports = router;

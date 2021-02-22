@@ -114,6 +114,27 @@ class UserController {
       next(err);
     }
   }
+
+  createUser = async(req, res, next) => {
+    try{
+      const { usbId, userName, userEmail, userType } = req.body;
+      const pass = usbId + '123'
+      await usersService.checkOrCreateUser(
+        usbId,
+        userName,
+        userEmail,
+        userType,
+        pass
+      );
+      res.status(201).send(`Usuario ${usbId} creado.`);
+    } catch(err){
+      if (err === 'Usuario ya se encuentra activo') {
+        res.status(400).json({ error: err });
+      }
+      res.status(500).json({ error: `Hubo un error en el servidor` });
+      next(err);
+    }
+  };
 }
 
 module.exports = UserController;
