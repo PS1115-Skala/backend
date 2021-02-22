@@ -160,71 +160,71 @@ insert into subject(id, dept, name) values
 ('CI4822', 'CI', 'Sistemas de Operación III');
 
 /*Rellenamos la tabla usuario*/
-/*Type 'O' departamento, 'U' estudiante, 'P' profesor, 'L' laboratorio, 'LF' laboratorio master*/
+/*Type 0000 departamento, 1111 estudiante, 2222 profesor, 3333 laboratorio, 4444 laboratorio master*/
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief, clave) values
-('12-10273', 'Jesus Kauze', '12-10273@usb.ve', 'U', true,1, '12-10273', '$2a$10$c8tYxQVE0.HHu9XVKSam.uarelO2Iqo6MBU1Wvu4mR5jkyvIpAuU.');
+('12-10273', 'Jesus Kauze', '12-10273@usb.ve', 1111, true,1, '12-10273', '$2a$10$c8tYxQVE0.HHu9XVKSam.uarelO2Iqo6MBU1Wvu4mR5jkyvIpAuU.');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
-('15-10123', 'Jose Barrera', '15-10123@usb.ve', 'U', false,0, '15-10123');
+('15-10123', 'Jose Barrera', '15-10123@usb.ve', 1111, false,0, '15-10123');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
-('13-11341', 'David Segura', '13-11341@usb.ve', 'U', false,0, '13-11341');
+('13-11341', 'David Segura', '13-11341@usb.ve', 1111, false,0, '13-11341');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
-('15-10611', 'Carlos Gonzalez', '15-10611@usb.ve', 'U', false,0, '15-10611');
+('15-10611', 'Carlos Gonzalez', '15-10611@usb.ve', 1111, false,0, '15-10611');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief, clave) values
-('labf', 'Laboratorio F', 'labf@usb.ve', 'LF', true, 1, 'labf', '$2a$10$c8tYxQVE0.HHu9XVKSam.uarelO2Iqo6MBU1Wvu4mR5jkyvIpAuU.');
+('labf', 'Laboratorio F', 'labf@usb.ve', 4444, true, 1, 'labf', '$2a$10$c8tYxQVE0.HHu9XVKSam.uarelO2Iqo6MBU1Wvu4mR5jkyvIpAuU.');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief, clave) values
-('cchang', 'Carolina Chang', 'cchang@usb.ve', 'P', true, 1, 'labf', '$2a$10$c8tYxQVE0.HHu9XVKSam.uarelO2Iqo6MBU1Wvu4mR5jkyvIpAuU.');
+('cchang', 'Carolina Chang', 'cchang@usb.ve', 2222, true, 1, 'labf', '$2a$10$c8tYxQVE0.HHu9XVKSam.uarelO2Iqo6MBU1Wvu4mR5jkyvIpAuU.');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
-('eduardo', 'Eduardo Blanco', 'eduardo@usb.ve', 'P', false, 0, 'labf');
+('eduardo', 'Eduardo Blanco', 'eduardo@usb.ve', 2222, false, 0, 'labf');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
-('mgoncalves', 'Marlene Goncalves', 'mgoncalves@usb.ve', 'P', false, 0, 'labf');
+('mgoncalves', 'Marlene Goncalves', 'mgoncalves@usb.ve', 2222, false, 0, 'labf');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief, clave) values
-('mcorniel', 'Marla Corniel', 'mcornie@usb.ve', 'P', true, 1, 'labf', '$2a$10$c8tYxQVE0.HHu9XVKSam.uarelO2Iqo6MBU1Wvu4mR5jkyvIpAuU.');
+('mcorniel', 'Marla Corniel', 'mcornie@usb.ve', 2222, true, 1, 'labf', '$2a$10$c8tYxQVE0.HHu9XVKSam.uarelO2Iqo6MBU1Wvu4mR5jkyvIpAuU.');
 --------------------------------------------------------------------
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
-('ldac', 'Laboratorio Docente de Aulas Computarizadas', 'ldac@usb.ve', 'L', false, 0, 'cchang');
+('ldac', 'Laboratorio Docente de Aulas Computarizadas', 'ldac@usb.ve', 3333, false, 0, 'cchang');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
-('ldc', 'Laboratorio Docente de Computación', 'ldc@usb.ve', 'L', false, 0, 'eduardo');
+('ldc', 'Laboratorio Docente de Computación', 'ldc@usb.ve', 3333, false, 0, 'eduardo');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
-('lamec', 'Laboratorio de Matemáticas y Estadística Computacional', 'lamec@usb.ve', 'L', false, 0, 'labf');
+('lamec', 'Laboratorio de Matemáticas y Estadística Computacional', 'lamec@usb.ve', 3333, false, 0, 'labf');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
-('laiac', 'Laboratorio de Aprendizaje de Idiomas Asistido por Computador', 'laiac@usb.ve', 'L', false,0, 'labf');
+('laiac', 'Laboratorio de Aprendizaje de Idiomas Asistido por Computador', 'laiac@usb.ve', 3333, false,0, 'labf');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
-('lcgm', 'Laboratorio de Computación Gráfica y Multimedia', 'lcgm@usb.ve', 'L', false,0, 'labf');
+('lcgm', 'Laboratorio de Computación Gráfica y Multimedia', 'lcgm@usb.ve', 3333, false,0, 'labf');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
-('ldcp', 'Laboratorio de Ciencias Políticas', 'ldcp@usb.ve', 'L', false, 0, 'labf');
+('ldcp', 'Laboratorio de Ciencias Políticas', 'ldcp@usb.ve', 3333, false, 0, 'labf');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
-('et', 'Laboratorio de Estudios Tecnologicos', 'et@usb.ve', 'L', false, 0, 'labf');
+('et', 'Laboratorio de Estudios Tecnologicos', 'et@usb.ve', 3333, false, 0, 'labf');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
-('lgu', 'Laboratorio de Geomatica Urbana', 'lgu@usb.ve', 'L', false, 0, 'labf');
+('lgu', 'Laboratorio de Geomatica Urbana', 'lgu@usb.ve', 3333, false, 0, 'labf');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
-('lie', 'Laboratorio de Informática Educativa', 'lie@usb.ve', 'L', false, 0, 'labf');
+('lie', 'Laboratorio de Informática Educativa', 'lie@usb.ve', 3333, false, 0, 'labf');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
-('bwl', 'Laboratorio de Redes y Bases de Datos', 'bwl@usb.ve', 'L', false,0, 'mgoncalves');
+('bwl', 'Laboratorio de Redes y Bases de Datos', 'bwl@usb.ve', 3333, false,0, 'mgoncalves');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
-('CI', 'Departamento de Computación', 'dci@usb.ve', 'O', false, 0, 'CI');
+('CI', 'Departamento de Computación', 'dci@usb.ve', 0000, false, 0, 'CI');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
-('CO', 'Departamento de Cómputo Científico y Estadística', 'dept-co@usb.ve', 'O', false, 0, 'CI');
+('CO', 'Departamento de Cómputo Científico y Estadística', 'dept-co@usb.ve', 0000, false, 0, 'CI');
 
 /*Rellenamos la tabla de room*/
 
