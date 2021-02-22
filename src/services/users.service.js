@@ -45,9 +45,16 @@ class UsersService {
     return profesores || [];
   }
 
-  async registerUser(usbId, name, email, type) {
-    let query = `INSERT into usuario (id,name, email, type, is_active, is_verified, chief)
+  async registerUser(usbId, name, email, type, clave) {
+    let query;
+    if (clave != null){
+      const claveEncrypt = await auth.encryptPassword(clave);
+      query = `INSERT into usuario (id, name, clave, email, type, is_active, is_verified, chief)
+        values('${usbId}', '${name}', '${claveEncrypt}', '${email}', '${type}', 1, true, '${usbId}')`;
+    }else{
+      query = `INSERT into usuario (id,name, email, type, is_active, is_verified, chief)
         values('${usbId}', '${name}', '${email}', '${type}', 0, false, '${usbId}')`;
+    }
     await pool.query(query);
   }
 
@@ -57,6 +64,16 @@ class UsersService {
 
     const user_updated = await pool.query(query);
     return user_updated;
+  }
+
+  async updateUser(id, data){
+    try{
+      let query = this.updateQueryUser(id, data);
+      const user_updated = await pool.query(query);
+      return user_updated;
+    } catch (err) {
+      throw new Error('Keys proporcionadas incorrectas.');
+    }
   }
 
   async loginUser(usbId, clave) {
@@ -94,18 +111,38 @@ class UsersService {
     }
   };
 
-  checkOrCreateUser = async (usbId, name, email, type) => {
+  checkOrCreateUser = async (usbId, name, email, type, clave) => {
     try {
       const userExists = await this.getUser(usbId);
       // El usuario no existe y hay que crearlo
       if (userExists.rows.length == 0) {
-        await this.registerUser(usbId, name, email, type);
+        await this.registerUser(usbId, name, email, type, clave);
       } else if (userExists.rows[0].is_verified == true) {
         throw 'Usuario ya se encuentra activo';
       }
     } catch (err) {
       throw err;
     }
+  };
+
+  updateQueryUser(id, update) {
+    // Setup static beginning of query
+    let query = ['UPDATE usuario'];
+    query.push('SET');
+
+    // Create another array storing each set command
+    // and assigning a number value for parameterized query
+    let set = [];
+    Object.keys(update).forEach(function (key) {
+      set.push(`${key} = '${update.key}'`); 
+    });
+    query.push(set.join(', '));
+
+    // Add the WHERE statement to look up by id
+    query.push(`WHERE id = '${id}'`);
+
+    // Return a complete query string
+    return query.join(' ');
   };
 }
 
