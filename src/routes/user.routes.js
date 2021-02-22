@@ -55,4 +55,10 @@ router.post('/usuario/signin', userController.signIn);
 /* UsbId details */
 router.post('/usuario/userInfo', userController.userInfo);
 
+/* Crear usuario con clave definida */
+router.post('/usuario/create', userController.createUser);
+
+/* Actualizar usuario */
+router.put('/usuario/update', userController.updateUser);
+
 module.exports = router;
