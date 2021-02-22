@@ -47,12 +47,18 @@ router.get('/usuarios/admin', userController.getAdmins);
 router.get('/usuarios/profesor', userController.getStandardUsers);
 
 /* Registrar un nuevo usuario */
-router.post('/signup', userController.signUp);
+router.post('/usario/signup', userController.signUp);
 
 /* Inicio de sesion */
-router.post('/signin', userController.signIn);
+router.post('/usuario/signin', userController.signIn);
+
+/* UsbId details */
+router.post('/usuario/userInfo', userController.userInfo);
 
 /* Crear usuario con clave definida */
 router.post('/usuario/create', userController.createUser);
+
+/* Actualizar usuario */
+router.put('/usuario/update', userController.updateUser);
 
 module.exports = router;

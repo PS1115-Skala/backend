@@ -4,6 +4,22 @@ const pool = require('../data_base/pgConnect');
 const Auth = require('../authentication/auth.js');
 const auth = new Auth();
 
+const USER_TYPES = {
+  U: 'Estudiante',
+  P: 'Profesor',
+  O: 'Departamento',
+  LF: 'Laboratorio F',
+  L: 'Laboratorio'
+};
+
+const USER_TYPE_NUMBERS = {
+  U: 1111,
+  P: 2222,
+  O: 0000,
+  LF: 4444,
+  L: 3333
+};
+
 class UsersService {
   async getUser(userId) {
     let query = `SELECT * FROM usuario WHERE id = '${userId}'`;
@@ -18,13 +34,13 @@ class UsersService {
   }
 
   async getAdminUsers() {
-    let query = `SELECT * FROM usuario WHERE type = 3333`;
+    let query = `SELECT * FROM usuario WHERE type = '4444'`;
     const requestsUsers = await pool.query(query);
     return requestsUsers || [];
   }
 
   async getProfesor() {
-    let query = `SELECT * FROM usuario WHERE type = 1111 or type = 2222`;
+    let query = `SELECT * FROM usuario WHERE type = '1111' or type = '2222'`;
     const profesores = await pool.query(query);
     return profesores || [];
   }
@@ -40,10 +56,14 @@ class UsersService {
         values('${usbId}', '${name}', '${email}', '${type}', 0, false, '${usbId}')`;
     }
     await pool.query(query);
+  }
 
-    const token = await auth.createToken(usbId, type);
+  async verifyUser(usbId, clave) {
+    const claveEncrypt = await auth.encryptPassword(clave);
+    let query = `UPDATE usuario SET clave = '${claveEncrypt}', is_active = '1', is_verified='true' WHERE id = '${usbId}'`;
 
-    return token;
+    const user_updated = await pool.query(query);
+    return user_updated;
   }
 
   async loginUser(usbId, clave) {
@@ -60,12 +80,24 @@ class UsersService {
     if (!validPassword) {
       return 1;
     } else {
-      const token = await auth.createToken(user.id, user.type);
+      const token = await auth.createToken(user.id, user.type, '18000s');
       return token;
     }
   }
 
-  userTypeToHumanLabel = (type) => USER_TYPES[type];
+  async updateUser(id, data){
+    try{
+      let query = this.updateQueryUser(id, data);
+      const user_updated = await pool.query(query);
+      return user_updated;
+    } catch (err) {
+      throw new Error('Keys proporcionadas incorrectas.');
+    }
+  }
+
+  userTypeToHumanLabel = type => USER_TYPES[type];
+
+  userTypeToNumber = type => USER_TYPE_NUMBERS[type];
 
   getUserType = (uuid, userType) => {
     if (userType === 'U' || userType === 'P') {
@@ -91,6 +123,26 @@ class UsersService {
     } catch (err) {
       throw err;
     }
+  };
+
+  updateQueryUser(id, update) {
+    // Setup static beginning of query
+    let query = ['UPDATE usuario'];
+    query.push('SET');
+  
+    // Create another array storing each set command
+    // and assigning a number value for parameterized query
+    let set = [];
+    Object.keys(update).forEach(function (key) {
+      set.push(`${key} = '${update.key}'`); 
+    });
+    query.push(set.join(', '));
+  
+    // Add the WHERE statement to look up by id
+    query.push(`WHERE id = '${id}'`);
+  
+    // Return a complete query string
+    return query.join(' ');
   };
 }
 
