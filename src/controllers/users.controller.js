@@ -99,7 +99,7 @@ class UserController {
       const err_msgs = [
         'Token invalido',
         'Token no pertenece al usuario',
-        'Falta Token',
+        'Falta Token'
       ];
       if (err_msgs.includes(err)) {
         res.status(400).json({ error: err });
@@ -118,10 +118,12 @@ class UserController {
       const { usbId, clave } = req.body;
       const login = await usersService.loginUser(usbId, clave);
       if (login == 0) {
-        return res.status(404).json({ error: `Usuario no registrado en la base de datos` });
+        return res
+          .status(404)
+          .json({ error: `Usuario no registrado en la base de datos` });
       }
       if (login == 1) {
-        return res.status(404).json({ error:'Clave incorrecta' });
+        return res.status(404).json({ error: 'Clave incorrecta' });
       }
       res.json({ auth: true, token: login });
     } catch (err) {
@@ -141,9 +143,9 @@ class UserController {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
-          origin: 'http://usbid.dst.usb.ve',
+          origin: 'http://usbid.dst.usb.ve'
         },
-        body: params,
+        body: params
       });
       if (!response.ok) {
         return res
@@ -162,7 +164,7 @@ class UserController {
       }
       const userName = `${response_data['gname']} ${response_data['sname']}`;
       const userEmail = `${usbId}@usb.ve`;
-      const userType = response_data['userType'];
+      const userType = usersService.userTypeToNumber(response_data['userType']);
       const userTypeHuman = usersService.userTypeToHumanLabel(
         response_data['userType']
       );
@@ -177,7 +179,7 @@ class UserController {
         usbId: usbId,
         name: userName,
         userType: userTypeHuman,
-        token: token,
+        token: token
       };
       res.json(userResponse);
     } catch (err) {

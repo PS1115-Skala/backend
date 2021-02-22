@@ -9,7 +9,15 @@ const USER_TYPES = {
   P: 'Profesor',
   O: 'Departamento',
   LF: 'Laboratorio F',
-  L: 'Laboratorio',
+  L: 'Laboratorio'
+};
+
+const USER_TYPE_NUMBERS = {
+  U: 1111,
+  P: 2222,
+  O: 0000,
+  LF: 4444,
+  L: 3333
 };
 
 class UsersService {
@@ -26,13 +34,13 @@ class UsersService {
   }
 
   async getAdminUsers() {
-    let query = `SELECT * FROM usuario WHERE type = 'L'`;
+    let query = `SELECT * FROM usuario WHERE type = '4444'`;
     const requestsUsers = await pool.query(query);
     return requestsUsers || [];
   }
 
   async getProfesor() {
-    let query = `SELECT * FROM usuario WHERE type = 'U' or type = 'P'`;
+    let query = `SELECT * FROM usuario WHERE type = '1111' or type = '2222'`;
     const profesores = await pool.query(query);
     return profesores || [];
   }
@@ -70,7 +78,9 @@ class UsersService {
     }
   }
 
-  userTypeToHumanLabel = (type) => USER_TYPES[type];
+  userTypeToHumanLabel = type => USER_TYPES[type];
+
+  userTypeToNumber = type => USER_TYPE_NUMBERS[type];
 
   getUserType = (uuid, userType) => {
     if (userType === 'U' || userType === 'P') {
