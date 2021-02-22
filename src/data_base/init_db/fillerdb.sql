@@ -162,6 +162,9 @@ insert into subject(id, dept, name) values
 /*Rellenamos la tabla usuario*/
 /*Type 0000 departamento, 1111 estudiante, 2222 profesor, 3333 laboratorio, 4444 laboratorio master*/
 
+insert into usuario(id,name,email,type,is_verified,is_active, chief) values
+('15-11523', 'Neil Villamizar', '15-11523@usb.ve', 1111, false,0, '15-11523');
+
 insert into usuario(id,name,email,type,is_verified,is_active, chief, clave) values
 ('12-10273', 'Jesus Kauze', '12-10273@usb.ve', 1111, true,1, '12-10273', '$2a$10$c8tYxQVE0.HHu9XVKSam.uarelO2Iqo6MBU1Wvu4mR5jkyvIpAuU.');
 
