@@ -75,7 +75,44 @@ describe('User', () => {
         it('it should update email of user Armando', (done) => {
             let user = {
                 id: "00-00000",
-                email: "00-00000@usb.ve"
+                email: "00-00001@usb.ve"
+            }
+            chai.request(app)
+                .put('/api/usuario/update')
+                .send(user)
+                .end((err, res) => {
+                    // need status 200
+                    expect(res).to.have.status(200);
+                    expect(res.body.message).to.have.equal(`Usuario ${user.id} actualizado correctamente.`)
+                    done();
+                });
+        });
+    })
+
+    describe('PUT /api/usuario/update', () => {
+        it('it should update name and email of user Armando ', (done) => {
+            let user = {
+                id: "00-00000",
+                email: "00-00002@usb.ve",
+                name: "Marmando Prueba"
+            }
+            chai.request(app)
+                .put('/api/usuario/update')
+                .send(user)
+                .end((err, res) => {
+                    // need status 200
+                    expect(res).to.have.status(200);
+                    expect(res.body.message).to.have.equal(`Usuario ${user.id} actualizado correctamente.`)
+                    done();
+                });
+        });
+    })
+
+    describe('PUT /api/usuario/update', () => {
+        it('it should update active of user Armando ', (done) => {
+            let user = {
+                id: "00-00000",
+                is_active: "1"
             }
             chai.request(app)
                 .put('/api/usuario/update')
