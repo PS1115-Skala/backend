@@ -112,7 +112,7 @@ describe('User', () => {
         it('it should update active of user Armando ', (done) => {
             let user = {
                 id: "00-00000",
-                is_active: "1"
+                is_active: 1
             }
             chai.request(app)
                 .put('/api/usuario/update')
