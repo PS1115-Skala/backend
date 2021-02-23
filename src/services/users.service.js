@@ -40,7 +40,7 @@ class UsersService {
   }
 
   async getProfesor() {
-    let query = `SELECT * FROM usuario WHERE type = '1111' or type = '2222'`;
+    let query = `SELECT * FROM usuario WHERE type = '2222'`;
     const profesores = await pool.query(query);
     return profesores || [];
   }
