@@ -133,8 +133,8 @@ class UsersService {
     // Create another array storing each set command
     // and assigning a number value for parameterized query
     let set = [];
-    Object.keys(update).forEach(function (key) {
-      set.push(`${key} = '${update.key}'`); 
+    Object.keys(update).forEach((key) => {
+      set.push(`${key} = '${update[key]}'`); 
     });
     query.push(set.join(', '));
 
