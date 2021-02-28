@@ -22,25 +22,25 @@ const USER_TYPE_NUMBERS = {
 
 class UsersService {
   async getUser(userId) {
-    let query = `SELECT * FROM usuario WHERE id = '${userId}'`;
+    let query = `SELECT id, name, email, type, is_active, is_verified, chief FROM usuario WHERE id = '${userId}'`;
     const requestsUsers = await pool.query(query);
     return requestsUsers || [];
   }
 
   async getUsers() {
-    let query = `SELECT * FROM usuario`;
+    let query = `SELECT id, name, email, type, is_active, is_verified, chief FROM usuario`;
     const requestsUsers = await pool.query(query);
     return requestsUsers || [];
   }
 
   async getAdminUsers() {
-    let query = `SELECT * FROM usuario WHERE type = '4444'`;
+    let query = `SELECT id, name, email, type, is_active, is_verified, chief FROM usuario WHERE type = '3333'`;
     const requestsUsers = await pool.query(query);
     return requestsUsers || [];
   }
 
   async getProfesor() {
-    let query = `SELECT * FROM usuario WHERE type = '2222'`;
+    let query = `SELECT id, name, email, type, is_active, is_verified, chief FROM usuario WHERE type = '2222'`;
     const profesores = await pool.query(query);
     return profesores || [];
   }
