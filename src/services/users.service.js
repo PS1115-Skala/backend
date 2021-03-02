@@ -1,25 +1,9 @@
 const pool = require('../data_base/pgConnect');
+const { USER_TYPES, USER_TYPE_NUMBERS } = require('../utils/constants')
 
 // Se importan metodos de autenticacion
 const Auth = require('../authentication/auth.js');
 const auth = new Auth();
-
-const USER_TYPES = {
-  U: 'Estudiante',
-  P: 'Profesor',
-  O: 'Departamento',
-  LF: 'Laboratorio F',
-  L: 'Laboratorio'
-};
-
-const USER_TYPE_NUMBERS = {
-  U: 1111,
-  P: 2222,
-  O: 0000,
-  LF: 4444,
-  L: 3333
-};
-
 class UsersService {
   async getUser(userId) {
     let query = `SELECT * FROM usuario WHERE id = '${userId}'`;
@@ -47,11 +31,11 @@ class UsersService {
 
   async registerUser(usbId, name, email, type, clave) {
     let query;
-    if (clave != null){
+    if (clave != null) {
       const claveEncrypt = await auth.encryptPassword(clave);
       query = `INSERT into usuario (id, name, clave, email, type, is_active, is_verified, chief)
         values('${usbId}', '${name}', '${claveEncrypt}', '${email}', '${type}', 1, true, '${usbId}')`;
-    }else{
+    } else {
       query = `INSERT into usuario (id,name, email, type, is_active, is_verified, chief)
         values('${usbId}', '${name}', '${email}', '${type}', 0, false, '${usbId}')`;
     }
@@ -66,8 +50,8 @@ class UsersService {
     return user_updated;
   }
 
-  async updateUser(id, data){
-    try{
+  async updateUser(id, data) {
+    try {
       let query = this.updateQueryUser(id, data);
       const user_updated = await pool.query(query);
       return user_updated;
@@ -134,7 +118,7 @@ class UsersService {
     // and assigning a number value for parameterized query
     let set = [];
     Object.keys(update).forEach((key) => {
-      set.push(`${key} = '${update[key]}'`); 
+      set.push(`${key} = '${update[key]}'`);
     });
     query.push(set.join(', '));
 

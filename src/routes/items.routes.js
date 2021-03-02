@@ -1,7 +1,9 @@
 const { Router } = require('express');
 
 const ItemController = require('../controllers/items.controller');
-const auth = require('../middleware/auth');
+
+// const auth = require('../middleware/authHandler');
+const auth = (req, _, next) => next()
 
 const router = Router()
 const itemController = new ItemController;

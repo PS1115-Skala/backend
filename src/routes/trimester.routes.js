@@ -2,7 +2,8 @@ const { Router } = require('express');
 const router = Router();
 
 const TrimesterController = require('../controllers/trimester.controller');
-const auth = require('../middleware/auth');
+// const auth = require('../middleware/authHandler');
+const auth = (req, _, next) => next()
 const trimesterController = new TrimesterController();
 
 /*

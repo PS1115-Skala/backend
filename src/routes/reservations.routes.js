@@ -2,7 +2,8 @@ const { Router } = require('express');
 const router = Router();
 
 const ReservationController = require('../controllers/reservations.controller');
-const auth = require('../middleware/auth');
+// const auth = require('../middleware/authHandler');
+const auth = (req, _, next) => next()
 const reservationController = new ReservationController;
 
 /*

@@ -30,10 +30,22 @@ class authControl {
   getRequestToken = (req) => {
     const token = req.headers['x-access-token'];
     if (!token) {
-      throw 'Falta Token';
+      throw new Error('Falta Token');
     }
     return token;
   };
+
+  async verifyAuthToken(req) {
+    const token = this.getRequestToken(req);
+    try {
+      const decodedToken = jwt.verify(token, tokenSecret);
+      return decodedToken
+    } catch (error) {
+      console.log(error);
+      return { type: false }
+    }
+
+  }
 
   verifySignInToken = async (req, usbId) => {
     const token = this.getRequestToken(req);

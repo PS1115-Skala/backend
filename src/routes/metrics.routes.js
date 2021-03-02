@@ -2,7 +2,8 @@ const { Router } = require('express');
 const router = Router();
 
 const MetricsController = require('../controllers/metric.controller');
-const auth = require('../middleware/auth');
+// const auth = require('../middleware/authHandler');
+const auth = (req, _, next) => next()
 const metricController = new MetricsController;
 
 /*

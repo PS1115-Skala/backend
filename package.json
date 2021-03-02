@@ -10,7 +10,9 @@
   "scripts": {
     "dev": "DEBUG=app:* nodemon --inspect=0.0.0.0 src/index",
     "start": "NODE_ENV=production node src/index",
-    "test": "mocha src/tests/ --exit",
+    "test:integration": "mocha ./src/tests/**/*.test.js --exit",
+    "test:unit": "./node_modules/.bin/mocha **/__tests__/**/*.test.js --exit",
+    "test": "npm run test:unit && npm run test:integration",
     "dtest": "docker-compose up -d postgresdb && docker-compose run --rm backend npm run test ; docker-compose down --volumes"
   },
   "keywords": [
