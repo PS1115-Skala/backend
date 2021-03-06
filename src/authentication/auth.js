@@ -36,12 +36,11 @@ class authControl {
   };
 
   async verifyAuthToken(req) {
-    const token = this.getRequestToken(req);
     try {
+      const token = this.getRequestToken(req);
       const decodedToken = jwt.verify(token, tokenSecret);
       return decodedToken
     } catch (error) {
-      console.log(error);
       return { type: false }
     }
 

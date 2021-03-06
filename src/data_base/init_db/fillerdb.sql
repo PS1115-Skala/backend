@@ -193,8 +193,8 @@ insert into usuario(id,name,email,type,is_verified,is_active, chief, clave) valu
 ('mcorniel', 'Marla Corniel', 'mcornie@usb.ve', 2222, true, 1, 'labf', '$2a$10$c8tYxQVE0.HHu9XVKSam.uarelO2Iqo6MBU1Wvu4mR5jkyvIpAuU.');
 --------------------------------------------------------------------
 
-insert into usuario(id,name,email,type,is_verified,is_active, chief) values
-('ldac', 'Laboratorio Docente de Aulas Computarizadas', 'ldac@usb.ve', 3333, false, 0, 'cchang');
+insert into usuario(id,name,email,type,is_verified,is_active, chief, clave) values
+('ldac', 'Laboratorio Docente de Aulas Computarizadas', 'ldac@usb.ve', 3333, false, 0, 'cchang', '$2a$10$c8tYxQVE0.HHu9XVKSam.uarelO2Iqo6MBU1Wvu4mR5jkyvIpAuU.');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('ldc', 'Laboratorio Docente de Computación', 'ldc@usb.ve', 3333, false, 0, 'eduardo');
