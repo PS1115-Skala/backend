@@ -1,7 +1,7 @@
 const { expect } = require('chai')
 const { prototype: { createToken } } = require('../../authentication/auth');
 
-const { isAdminLab, isLabF, isLogged } = require('../authHandler')
+const { isAdminLab, isLabF, isLogged, isBasicLogged, isAdminLogged } = require('../authHandler')
 const { USER_TYPE_NUMBERS: { L: lab, LF: labF, U: estudiante } } = require('../../utils/constants')
 
 describe('Authenticacion Middleware - Success', () => {
@@ -46,6 +46,36 @@ describe('Authenticacion Middleware - Success', () => {
         }
 
         const actual = await isLogged(req, res, next)
+
+        expect(actual).to.be.true;
+    })
+
+    it('it Should pass with correct Student or Prof or Dept user Token', async () => {
+        const token = await createToken(null, estudiante, 9999999999)
+        const res = { status: () => ({ json: () => null }) }
+        const next = () => true
+        const req = {
+            headers: {
+                'x-access-token': token
+            }
+        }
+
+        const actual = await isBasicLogged(req, res, next)
+
+        expect(actual).to.be.true;
+    })
+
+    it('it Should pass with correct AdminLab or Labf user Token', async () => {
+        const token = await createToken(null, lab, 9999999999)
+        const res = { status: () => ({ json: () => null }) }
+        const next = () => true
+        const req = {
+            headers: {
+                'x-access-token': token
+            }
+        }
+
+        const actual = await isAdminLogged(req, res, next)
 
         expect(actual).to.be.true;
     })
@@ -100,8 +130,8 @@ describe('Authenticacion Middleware - Failure', () => {
         expect(actual).to.deep.equal(expected);
     })
 
-    it('it Shouldnt pass with incorrect logged Token', async () => {
-        const res = { status: () => ({ json: () => null }) }
+    it('it Shouldnt pass without logged Token', async () => {
+        const res = { status: () => ({ json: (body) => body }) }
         const next = () => null
         const req = {
             headers: {
@@ -109,14 +139,8 @@ describe('Authenticacion Middleware - Failure', () => {
             }
         }
 
-        try {
-            await isLogged(req, res, next)
-            expect.fail()
-        } catch (error) {
-            const expected = new Error('Falta Token')
-            expect(error).to.deep.equal(expected);
-        }
-
-
+            const actual = await isLogged(req, res, next)
+            const expected = { unauthorized: 'Not logged user' }
+            expect(actual).to.deep.equal(expected);
     })
 })

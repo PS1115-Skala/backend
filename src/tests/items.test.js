@@ -1,29 +1,29 @@
-//Require the dev-dependencies
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 let app = require('../index');
-var expect = chai.expect;
+let expect = chai.expect;
 
+const { setupAdminToken, setupStudentToken } = require('../utils/helpers/setupTokens')
 
 chai.use(chaiHttp);
 
-/*
-SUBJECTS
-*/
+
 describe('Subjects', () => {
-    /*
-     * Test the /GET subjects.
-     */
+
+    let studentToken
+
+    before(async () => {
+        studentToken = await setupStudentToken();
+    })
+
     describe('GET /api/subjects', () => {
         it('it should get 21 subjects', (done) => {
             chai.request(app)
                 .get('/api/subjects')
+                .set('x-access-token', studentToken)
                 .end((err, res) => {
-                    // need status 200
                     expect(res).to.have.status(200)
-                    // need type array
                     expect(res.body).be.a('array');
-                    // need length 21
                     expect(res.body.length).be.eql(21);
                     done();
                 });
@@ -31,23 +31,23 @@ describe('Subjects', () => {
     });
 });
 
-/*
-ITEMS
-*/
 describe('Items', () => {
-    /*
-     * Test the /GET items
-     */
+
+    let adminToken, studentToken;
+
+    before(async () => {
+        studentToken = await setupStudentToken();
+        adminToken = await setupAdminToken();
+    })
+
     describe('GET /api/items', () => {
         it('it should get 11 items', (done) => {
             chai.request(app)
                 .get('/api/items')
+                .set('x-access-token', studentToken)
                 .end((err, res) => {
-                    // need status 200
                     expect(res).to.have.status(200)
-                    // need type array
                     expect(res.body).be.a('array');
-                    // need length 21
                     expect(res.body.length).be.eql(11);
                     done();
                 });
@@ -58,15 +58,12 @@ describe('Items', () => {
         it('it should get specific item: Mouse', (done) => {
             chai.request(app)
                 .get('/api/items/1')
+                .set('x-access-token', studentToken)
                 .end((err, res) => {
                     const element = res.body[0]
-                    // need status 200
                     expect(res).to.have.status(200)
-                    // need type array
                     expect(res.body).be.a('array');
-                    // need length 1
                     expect(res.body.length).be.eql(1);
-                    // Values => id: 1, name: Mouse, description: null
                     expect(element.id).to.have.equal("1");
                     expect(element.name).to.have.equal('Mouse');
                     expect(element.description).to.have.equal(null);
@@ -83,13 +80,11 @@ describe('Items', () => {
             }
             chai.request(app)
                 .post('/api/item')
+                .set('x-access-token', adminToken)
                 .send(item)
                 .end((err, res) => {
-                    // status: 201
                     expect(res).to.have.status(201)
-                    // type: object
                     expect(res.body).be.a('object');
-                    // message: Item <name> creado
                     expect(res.body.message).to.have.equal('Item ' + item.name + ' creado')
                     done();
                 });
@@ -105,13 +100,11 @@ describe('Items', () => {
             }
             chai.request(app)
                 .put('/api/items/' + id)
+                .set('x-access-token', adminToken)
                 .send(itemUpdate)
                 .end((err, res) => {
-                    // status: 200
                     expect(res).to.have.status(200)
-                    // type: object
                     expect(res.body).be.a('object');
-                    // message: Item <name> actualizado
                     expect(res.body.message).to.have.equal(`Item ${id} actualizado`)
                     done();
                 });
@@ -123,12 +116,10 @@ describe('Items', () => {
             let id = 12
             chai.request(app)
                 .delete('/api/items/' + id)
+                .set('x-access-token', adminToken)
                 .end((err, res) => {
-                    // status: 200
                     expect(res).to.have.status(200)
-                    // type: object
                     expect(res.body).be.a('object');
-                    // message: Item Id: <id> Eliminado correctamente
                     expect(res.body.message).to.have.equal('Item Id: ' + id + ' Eliminado correctamente')
                     done();
                 });

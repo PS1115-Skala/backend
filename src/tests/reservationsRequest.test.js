@@ -1,15 +1,20 @@
-//Require the dev-dependencies
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 let app = require('../index');
-var expect = chai.expect;
+let expect = chai.expect;
+
+const { setupAdminToken, setupStudentToken } = require('../utils/helpers/setupTokens')
 
 chai.use(chaiHttp);
 
-/*
-RESERVATIONS REQUESTS
-*/
 describe('Reservations requests', () => {
+
+    let adminToken, studentToken;
+
+    before(async () => {
+        studentToken = await setupStudentToken();
+        adminToken = await setupAdminToken();
+    })
     /*
      * Test the /GET info about reservation request
      */
@@ -17,15 +22,12 @@ describe('Reservations requests', () => {
         it('it should get an information about one reservation request', (done) => {
             chai.request(app)
                 .get('/api/solicitudes/1')
+                .set('x-access-token', studentToken)
                 .end((err, res) => {
                     const reservationRequest = res.body[0]
-                    // need status 200
                     expect(res).to.have.status(200)
-                    // need type array
                     expect(res.body).be.a('array');
-                    // need length (1)
                     expect(res.body.length).be.eql(1);
-                    // Values
                     expect(reservationRequest.id).to.have.equal('1');
                     expect(reservationRequest.room_id).to.have.equal('MYS-019');
                     expect(reservationRequest.requester_id).to.have.equal('15-10611');
@@ -39,15 +41,12 @@ describe('Reservations requests', () => {
         it('it should get the shedule of reservation request 1', (done) => {
             chai.request(app)
                 .get('/api/solicitudes/1/horario')
+                .set('x-access-token', studentToken)
                 .end((err, res) => {
                     const schedule = res.body.shedule
-                    // need status 200
                     expect(res).to.have.status(200)
-                    // need type array
                     expect(res.body).be.a('object');
-                    // need length (1)
                     expect(schedule.length).be.eql(12);
-                    // Values
                     expect(res.body.typeWeek).to.have.equal('pares');
                     expect(schedule[0].day).to.have.equal('Lunes');
                     expect(schedule[0].hour).to.have.equal(1);
@@ -61,12 +60,10 @@ describe('Reservations requests', () => {
         it('it should get the 4 reservations request in ENE-MAR2020',(done) => {
             chai.request(app)
                 .get('/api/solicitudes/usuario/12-10273')
+                .set('x-access-token', studentToken)
                 .end((err, res) => {
-                    // need status 200
                     expect(res).to.have.status(200)
-                    // need type array
                     expect(res.body).be.a('array');
-                    // need length (4)
                     expect(res.body.length).be.eql(4);
                     done();
                 });
@@ -77,12 +74,10 @@ describe('Reservations requests', () => {
         it('it should get all reservations request to ldac in ENE-MAR2020',(done) => {
             chai.request(app)
                 .get('/api/solicitudes/admin/ldac')
+                .set('x-access-token', adminToken)
                 .end((err, res) => {
-                    // need status 200
                     expect(res).to.have.status(200)
-                    // need type array
                     expect(res.body).be.a('array');
-                    // need length (13)
                     expect(res.body.length).be.eql(13);
                     done();
                 });
@@ -107,13 +102,11 @@ describe('Reservations requests', () => {
             }]
             chai.request(app)
                 .post('/api/crear/solicitudes/reserva')
+                .set('x-access-token', studentToken)
                 .send(request)
                 .end((err, res) => {
-                    // status: 201
                     expect(res).to.have.status(201)
-                    // type: object message
                     expect(res.body).be.a('object');
-                    // message: se creo correctamente la solicitud
                     expect(res.body.message).to.have.equal( `Se creo correctamente la solicitud`)
                     done();
                 });
@@ -130,11 +123,10 @@ describe('Reservations requests', () => {
             }
             chai.request(app)
                 .put('/api/solicitudes/reserva/16')
+                .set('x-access-token', studentToken)
                 .send(aprovedReq)
                 .end((err, res) => {
-                    // status: 200
                     expect(res).to.have.status(200)
-                    // type: object
                     expect(res.body).be.a('object');
                     done();
                 });
@@ -148,6 +140,7 @@ describe('Reservations requests', () => {
         it('it should delete the pending request (15)', (done) => {
             chai.request(app)
                 .delete('/api/eliminar/solicitud/reserva/15')
+                .set('x-access-token', studentToken)
                 .end((err, res) => {
                     // status: 200
                     expect(res).to.have.status(200)
