@@ -216,9 +216,8 @@ class UserController {
 
   updateUser = async(req, res, next) => {
     try{
-      const id = req.body.id;
+      const id = req.params.userId;
       const data = req.body;
-      delete data.id;
       await usersService.updateUser(id, data).then( () => {
         return res.status(200).json({ message: `Usuario ${id} actualizado correctamente.`});
       }).catch((err) => {

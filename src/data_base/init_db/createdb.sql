@@ -134,3 +134,16 @@ CREATE TABLE IF NOT EXISTS reservation_request_schedule(
     hour SMALLINT,
     week SMALLINT
 );
+
+-- Reservas Especiales
+CREATE TABLE IF NOT EXISTS special_reservations(
+    id BIGSERIAL PRIMARY KEY,
+    FOREIGN KEY (requester_id) REFERENCES usuario(id),
+    contact_name VARCHAR(64) NOT NULL,
+    contact_email VARCHAR(64) NOT NULL,
+    reservation_day DATE NOT NULL,
+    reservation_hour VARCHAR(32),
+    amount_people SMALLINT,
+    observations VARCHAR(512),
+    FOREIGN KEY (trimester_id) REFERENCES trimester(id)
+);

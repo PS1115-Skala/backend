@@ -509,3 +509,9 @@ insert into asig_schedule(asignation_id, day, hour, week) values(2,'Martes', 2, 
 -- insert into asig_schedule(asignation_id, day, hour, week) values(4,'Lunes', 2, 2);
 -- insert into asig_schedule(asignation_id, day, hour, week) values(4,'Lunes', 3, 2);
 
+/*Rellenamos Reservas Especiales*/
+insert into special_reservations(requester_id, contact_name, contact_email, reservation_day, reservation_hour, amount_people, observations, trimester_id) values
+('13-11341','David Segura','13-11341@usb.ve','2020-03-07','12:00 PM',10,'Necesito computadoras','ENE-MAR2020');
+
+insert into special_reservations(requester_id, contact_name, contact_email, reservation_day, reservation_hour, amount_people, trimester_id) values
+('12-10273','Jesus Kauze','12-10273@usb.ve','2019-02-27','3:00 PM',19,'ENE-MAR2019');

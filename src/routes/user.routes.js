@@ -2,8 +2,8 @@ const { Router } = require('express');
 const router = Router();
 
 const UserController = require('../controllers/users.controller');
-// const auth = require('../middleware/authHandler');
-const auth = (req, _, next) => next()
+const auth = require('../middleware/authHandler');
+const authDev = (req, _, next) => next()
 const userController = new UserController();
 
 /*
@@ -37,16 +37,16 @@ const userController = new UserController();
  */
 
 /* [TESTED] Obtener un usuario de la base de datos. */
-router.get('/usuario/:userId', auth, userController.getUser);
+router.get('/usuario/:userId', authDev, userController.getUser);
 
 /* [TESTED] Obtener todos los usuarios */
-router.get('/usuarios', auth, userController.getUsers);
+router.get('/usuarios', authDev, userController.getUsers);
 
 /* [TESTED] Obtener todos los usuarios que son laboratorio docente */
-router.get('/usuarios/admin', auth, userController.getAdmins);
+router.get('/usuarios/admin', authDev, userController.getAdmins);
 
 /* [TESTED] Obtener todos los usuarios que son profesor o estudiante */
-router.get('/usuarios/profesor', auth, userController.getStandardUsers);
+router.get('/usuarios/profesor', authDev, userController.getStandardUsers);
 
 /* Registrar un nuevo usuario */
 router.post('/usario/signup', userController.signUp);
@@ -57,10 +57,10 @@ router.post('/usuario/signin', userController.signIn);
 /* UsbId details */
 router.post('/usuario/userInfo', userController.userInfo);
 
-/* Crear usuario con clave definida */
-router.post('/usuario/create', userController.createUser);
+/* [TESTED] Crear usuario con clave definida */
+router.post('/usuario/create', auth.isLabF, userController.createUser);
 
-/* Actualizar usuario */
-router.put('/usuario/update', userController.updateUser);
+/* [TESTED] Actualizar usuario */
+router.put('/usuario/update/:userId', auth.isLabF, userController.updateUser);
 
 module.exports = router;
