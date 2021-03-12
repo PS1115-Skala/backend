@@ -3,45 +3,52 @@ const TrimestersService = require('./trimesters.service');
 const trimestersService = new TrimestersService();
 
 class SpecialReservationsService{
-    async getSpecialReservations() {
-        let query = `SELECT id, requester_id, contact_name, contact_email, reservation_day,
-                            reservation_hour, amount_people, observations, trimester_id
+    async getAll(labId, trim_id) {
+        let query = `SELECT id, requester_id, laboratory, contact_name, reservation_day 
                      FROM special_reservations`;
-        const specialR = await pool.query(query);
+        let where = ' WHERE ';
+        let values = [];
+        if (labId != 'all' || trim_id != 'all'){
+            if (labId != 'all') {
+                where += 'laboratory = $1';
+                values.push(labId);
+            }
+            if (labId != 'all' & trim_id != 'all') {
+                where += `and trimester_id= $2`;
+                values.push(trim_id)
+            }
+            else if (trim_id != 'all') {
+                where += `trimester_id= $1`;
+                values.push(trim_id);
+            }
+            query += where;
+        }
+        const specialR = await pool.query(query, values);
         return specialR;
     }
 
-    async getActualSpecialReservations() {
-        let actualTrimId = await trimestersService.getActualTrim();
-        const value = actualTrimId.rows[0].id;
-        let query = `SELECT id, requester_id, contact_name, contact_email, reservation_day,
-                            reservation_hour, amount_people, observations
+    async getById(id_spec) {
+        let query = `SELECT requester_id, laboratory, contact_name, contact_email, reservation_day,
+                            reservation_hour, amount_people, observations, trimester_id
                      FROM special_reservations
-                     WHERE trimester_id= $1`;
-        const specialR = await pool.query(query, value);
+                     WHERE id = $1`;
+        const specialR = await pool.query(query, [id_spec]);
         return specialR;
     }
 
-    async getTrimSpecialReservations(trim_id) {
-        let query = `SELECT id, requester_id, contact_name, contact_email, reservation_day,
-                            reservation_hour, amount_people, observations
-                     FROM special_reservations
-                     WHERE trimester_id= $1`;
-        const specialR = await pool.query(query, trim_id);
-        return specialR;
-    }
-
-    async createSpecialReservation(user,name,email,day,hour,quantity,observations){
+    async create(user,lab,name,email,day,hour,quantity,observations){
         let actualTrimId = await trimestersService.getActualTrim();
-        const value = actualTrimId.rows[0].id;
-        let query = `INSERT into special_reservations(requester_id, contact_name, contact_email, reservation_day, reservation_hour, amount_people, observations, trimester_id) values
-                    (${user},${name},${email},${day},${hour},${quantity},${observations},${value})`;
-        await pool.query(query);
+        const actualTrim = actualTrimId.rows[0].id;
+        let query = `INSERT into special_reservations(requester_id, laboratory, contact_name, contact_email, 
+                                 reservation_day, reservation_hour, amount_people, observations, trimester_id) values
+                    ($1,$2,$3,$4,$5,$6,$7,$8,$9)`
+        const values = [user,lab,name,email,day,hour,quantity,observations,actualTrim];
+        await pool.query(query, values);
     }
 
-    async deleteSpecialReservation(id){
-        let query = `DELETE FROM special_reservations WHERE id = ${id}`;
-        await pool.query(query);
+    async delete(id){
+        let query = `DELETE FROM special_reservations WHERE id = $1`;
+        await pool.query(query, [id]);
     }
 }
 

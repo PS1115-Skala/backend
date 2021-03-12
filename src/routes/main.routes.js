@@ -15,6 +15,7 @@ const roomRequestRoutes = require('./roomRequest.routes');
 const userRoutes = require('./user.routes');
 const subjectRoutes = require('./subjects.routes');
 const metricRoutes = require('./metrics.routes');
+const specialResRoutes = require('./specialReservations.routes');
 
 function reservACapi(app) {
   // Prefix Route
@@ -92,6 +93,14 @@ function reservACapi(app) {
 */
 
   router.use(metricRoutes);
+
+    /*
+    ***************************************************************
+                      SPECIAL RESERVATIONS ROUTES
+    *******************************************************************
+*/
+
+  router.use(specialResRoutes);
 }
 
 module.exports = reservACapi;
