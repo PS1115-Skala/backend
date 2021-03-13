@@ -6,7 +6,7 @@ let expect = chai.expect;
 
 chai.use(chaiHttp);
 
-const { setupLabfToken } = require('../utils/helpers/setupTokens')
+const { setupStudentToken, setupLabfToken } = require('../utils/helpers/setupTokens')
 
 /*
 USER
@@ -14,15 +14,17 @@ USER
 describe('User', () => {
 
     let labfToken;
+    let studentToken;
 
     before(async () => {
         labfToken = await setupLabfToken();
+        studentToken = await setupStudentToken();
     })
     /*
      * Test the /POST about users creation
      */
     describe('POST /api/usuario/create', () => {
-        it('it should create a user with a pass defined', (done) => {
+        it('it should create a user "00-00000" with a pass defined', (done) => {
             const user = {
                 usbId: "00-00000",
                 userName: "Armando Prueba",
@@ -40,11 +42,8 @@ describe('User', () => {
                     done();
                 });
         });
-    })
 
-
-    describe('POST /api/usuario/create', () => {
-        it('it should fail when trying to create a user that already exists', (done) => {
+        it('it should fail when trying to create a user "00-00000" that already exists', (done) => {
             const user = {
                 usbId: "00-00000",
                 userName: "Armando Prueba",
@@ -62,9 +61,7 @@ describe('User', () => {
                     done();
                 });
         });
-    })
 
-    describe('POST /api/usuario/create', () => {
         it('it should fail when passing inconsistent data', (done) => {
             const user = {
                 usbId: "11223"
@@ -80,10 +77,27 @@ describe('User', () => {
                     done();
                 });
         });
+
+        it('it should get an error because request is unauthorized', (done) => {
+            const user = {
+                usbId: "00-00001",
+                userName: "Tarmando Prueba",
+                userEmail: "00-00001@usb.ve",
+                userType: 1111
+            }
+            chai.request(app)
+                .post('/api/usuario/create')
+                .set('x-access-token', studentToken)
+                .send(user)
+                .end((err, res) => {
+                    expect(res).to.have.status(403);
+                    done();
+                });
+        });
     })
 
-    describe('PUT /api/usuario/update/:userId', () => {
-        it('it should update email of user Armando', (done) => {
+    describe('PUT /api/usuario/update/00-00000', () => {
+        it('it should update email of user "00-00000"', (done) => {
             const user = "00-00000";
             const data = {
                 email: "00-00001@usb.ve"
@@ -99,10 +113,8 @@ describe('User', () => {
                     done();
                 });
         });
-    })
 
-    describe('PUT /api/usuario/update/:userId', () => {
-        it('it should update name and email of user Armando ', (done) => {
+        it('it should update name and email of user "00-00000"', (done) => {
             const user = "00-00000";
             const data = {
                 email: "00-00002@usb.ve",
@@ -119,10 +131,26 @@ describe('User', () => {
                     done();
                 });
         });
-    })
 
-    describe('PUT /api/usuario/update/:userId', () => {
-        it('it should update active of user Armando ', (done) => {
+        it('it should update name and email of user "00-00000"', (done) => {
+            const user = "00-00000";
+            const data = {
+                email: "00-00002@usb.ve",
+                name: "Mamando Prueba"
+            }
+            chai.request(app)
+                .put(`/api/usuario/update/${user}`)
+                .set('x-access-token', labfToken)
+                .send(data)
+                .end((err, res) => {
+                    // need status 200
+                    expect(res).to.have.status(200);
+                    expect(res.body.message).to.have.equal(`Usuario ${user} actualizado correctamente.`)
+                    done();
+                });
+        });
+
+        it('it should update active of user "00-00000"', (done) => {
             const user = "00-00000";
             const data = {
                 is_active: 1
@@ -138,10 +166,8 @@ describe('User', () => {
                     done();
                 });
         });
-    })
 
-    describe('PUT /api/usuario/update', () => {
-        it('it should fail because no have keys', (done) => {
+        it('it should fail because no have keys data to update "00-00000"', (done) => {
             const user = "00-00000";
             const data = {
             }
@@ -152,6 +178,21 @@ describe('User', () => {
                 .end((err, res) => {
                     // need status 400
                     expect(res).to.have.status(400);
+                    done();
+                });
+        });
+
+        it('it should get an error because request is unauthorized', (done) => {
+            const user = "00-00000";
+            const data = {
+                is_active: 0
+            }
+            chai.request(app)
+                .put(`/api/usuario/update/${user}`)
+                .set('x-access-token', studentToken)
+                .send(data)
+                .end((err, res) => {
+                    expect(res).to.have.status(403);
                     done();
                 });
         });

@@ -135,9 +135,7 @@ describe('Special Reservations', () => {
                     done();
                 });
         });
-    })
 
-    describe('GET /api/special?trim=ENE-MAR2019&lab=ldc', () => {
         it('it should get an error because request is unauthorized', (done) => {
             chai.request(app)
                 .get('/api/special?trim=ENE-MAR2019&lab=ldc')
@@ -149,7 +147,7 @@ describe('Special Reservations', () => {
         });
     })
 
-    describe('GET /api/special/:id', () => {
+    describe('GET /api/special/1', () => {
         it('it should get an details about a special reservation', (done) => {
             const expected = {
                 requester_id: '13-11341',
@@ -174,9 +172,7 @@ describe('Special Reservations', () => {
                     done();
                 });
         });
-    })
 
-    describe('GET /api/special/:id', () => {
         it('it should get an error because request is unauthorized', (done) => {
             chai.request(app)
                 .get('/api/special/1')
@@ -191,7 +187,7 @@ describe('Special Reservations', () => {
     /*
      * Test the /POST about special reservations
      */
-    describe('POST /api/special/create/:userId', () => {
+    describe('POST /api/special/create/15-10123', () => {
         it('it should create a special reservation by a student user', (done) => {
             const user = '15-10123';
             const data = {
@@ -214,9 +210,7 @@ describe('Special Reservations', () => {
                     done();
                 });
         });
-    })
 
-    describe('POST /api/special/create/:userId', () => {
         it('it should fail when passing inconsistent data', (done) => {
             const user = '15-10123';
             const data = {
@@ -239,7 +233,7 @@ describe('Special Reservations', () => {
         });
     })
 
-    describe('POST /api/special/create/:userId', () => {
+    describe('POST /api/special/create/ldac', () => {
         it('it should create a special reservation by a admin user', (done) => {
             const user = 'ldac';
             const data = {
@@ -268,7 +262,7 @@ describe('Special Reservations', () => {
      * Test the DELETE about special reservations
      */
 
-    describe('DELETE /api/special/:id', () => {
+    describe('DELETE /api/special/2', () => {
         it('it should delete a special reservation', (done) => {
             chai.request(app)
                 .delete('/api/special/2')
@@ -280,7 +274,7 @@ describe('Special Reservations', () => {
         });
     })
 
-    describe('DELETE /api/special/:id', () => {
+    describe('DELETE /api/special/78', () => {
         it('it should fail deleting a special reservation that no exist', (done) => {
             chai.request(app)
                 .delete('/api/special/78')
@@ -292,7 +286,7 @@ describe('Special Reservations', () => {
         });
     })
 
-    describe('DELETE /api/special/:id', () => {
+    describe('DELETE /api/special/3', () => {
         it('it should get an error because request is unauthorized', (done) => {
             chai.request(app)
                 .delete('/api/special/3')
