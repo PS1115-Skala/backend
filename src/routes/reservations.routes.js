@@ -3,7 +3,7 @@ const router = Router();
 
 const ReservationController = require('../controllers/reservations.controller');
 const auth = require('../middleware/authHandler');
-// const auth = (req, _, next) => next()
+
 const reservationController = new ReservationController;
 
 /*
@@ -22,7 +22,7 @@ router.get("/reservas/:roomId", auth.isLogged, reservationController.asignations
 router.get("/reservas/:reservaID/horario", auth.isLogged, reservationController.asignationSchedule);
 
 /* [TESTED] Crear una reserva (se crea por debajo la solicitud y se acepta automaticamente para ser una reserva) */
-router.post("/crear/reserva", auth.isLogged, reservationController.createNewReservation);
+router.post("/crear/reserva", auth.isAdminLab, reservationController.createNewReservation);
 
 router.post("/eliminar/reserva", auth.isAdminLab, reservationController.deleteReservation);
 
