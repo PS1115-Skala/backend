@@ -1,9 +1,6 @@
 const SpecialReservationsService = require('../services/specialReservations.service');
 const specialResService = new SpecialReservationsService();
 
-// Validations
-const boom = require('@hapi/boom');
-
 /*
     Controller
 */

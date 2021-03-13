@@ -11,9 +11,11 @@ const { setupStudentToken, setupAdminToken, setupLabfToken } = require('../utils
 /*
 SPECIAL RESERVATIONS
 */
-describe('User', () => {
+describe('Special Reservations', () => {
 
     let labfToken;
+    let studentToken;
+    let adminToken;
 
     before(async () => {
         studentToken = await setupStudentToken();

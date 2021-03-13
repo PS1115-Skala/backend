@@ -3,7 +3,6 @@ const router = Router();
 
 const UserController = require('../controllers/users.controller');
 const auth = require('../middleware/authHandler');
-const authDev = (req, _, next) => next()
 const userController = new UserController();
 
 /*
@@ -36,17 +35,17 @@ const userController = new UserController();
  *         description: login
  */
 
-/* [TESTED] Obtener un usuario de la base de datos. */
-router.get('/usuario/:userId', authDev, userController.getUser);
+/* Obtener un usuario de la base de datos. */
+router.get('/usuario/:userId', auth.isLogged, userController.getUser);
 
-/* [TESTED] Obtener todos los usuarios */
-router.get('/usuarios', authDev, userController.getUsers);
+/* Obtener todos los usuarios */
+router.get('/usuarios', auth.isLabF, userController.getUsers);
 
-/* [TESTED] Obtener todos los usuarios que son laboratorio docente */
-router.get('/usuarios/admin', authDev, userController.getAdmins);
+/* Obtener todos los usuarios que son laboratorio docente */
+router.get('/usuarios/admin', auth.isLogged, userController.getAdmins);
 
-/* [TESTED] Obtener todos los usuarios que son profesor o estudiante */
-router.get('/usuarios/profesor', authDev, userController.getStandardUsers);
+/* Obtener todos los usuarios que son profesor o estudiante */
+router.get('/usuarios/profesor', auth.isAdminLogged, userController.getStandardUsers);
 
 /* Registrar un nuevo usuario */
 router.post('/usario/signup', userController.signUp);

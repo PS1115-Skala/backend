@@ -13,7 +13,7 @@ class SpecialReservationsService{
                 where += 'laboratory = $1';
                 values.push(labId);
             }
-            if (labId != 'all' & trim_id != 'all') {
+            if (labId != 'all' && trim_id != 'all') {
                 where += `and trimester_id= $2`;
                 values.push(trim_id)
             }
@@ -28,7 +28,7 @@ class SpecialReservationsService{
     }
 
     async getById(id_spec) {
-        let query = `SELECT requester_id, laboratory, contact_name, contact_email, reservation_day,
+        const query = `SELECT requester_id, laboratory, contact_name, contact_email, reservation_day,
                             reservation_hour, amount_people, observations, trimester_id
                      FROM special_reservations
                      WHERE id = $1`;
@@ -37,9 +37,9 @@ class SpecialReservationsService{
     }
 
     async create(user,lab,name,email,day,hour,quantity,observations){
-        let actualTrimId = await trimestersService.getActualTrim();
+        const actualTrimId = await trimestersService.getActualTrim();
         const actualTrim = actualTrimId.rows[0].id;
-        let query = `INSERT into special_reservations(requester_id, laboratory, contact_name, contact_email, 
+        const query = `INSERT into special_reservations(requester_id, laboratory, contact_name, contact_email, 
                                  reservation_day, reservation_hour, amount_people, observations, trimester_id) values
                     ($1,$2,$3,$4,$5,$6,$7,$8,$9)`
         const values = [user,lab,name,email,day,hour,quantity,observations,actualTrim];
@@ -47,7 +47,7 @@ class SpecialReservationsService{
     }
 
     async delete(id){
-        let query = `DELETE FROM special_reservations WHERE id = $1`;
+        const query = `DELETE FROM special_reservations WHERE id = $1`;
         await pool.query(query, [id]);
     }
 }

@@ -148,7 +148,7 @@ CREATE TABLE IF NOT EXISTS special_reservations(
     reservation_day DATE NOT NULL,
     reservation_hour VARCHAR(32),
     amount_people SMALLINT,
-    observations VARCHAR(512),
+    observations TEXT,
     trimester_id VARCHAR(12),
     FOREIGN KEY (trimester_id) REFERENCES trimester(id)
 );
