@@ -119,6 +119,7 @@ CREATE TABLE IF NOT EXISTS reservation_request(
     FOREIGN KEY (subject_id) REFERENCES subject(id),
     send_time TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     trimester_id VARCHAR(12),
+    FOREIGN KEY (trimester_id) REFERENCES trimester(id),
     reason VARCHAR(128),
     material_needed VARCHAR(512),
     quantity SMALLINT,
@@ -133,4 +134,21 @@ CREATE TABLE IF NOT EXISTS reservation_request_schedule(
     day VARCHAR(9),
     hour SMALLINT,
     week SMALLINT
+);
+
+-- Reservas Especiales
+CREATE TABLE IF NOT EXISTS special_reservations(
+    id BIGSERIAL PRIMARY KEY,
+    requester_id VARCHAR(64),
+    FOREIGN KEY (requester_id) REFERENCES usuario(id),
+    laboratory VARCHAR(64),
+    FOREIGN KEY (laboratory) REFERENCES usuario(id),
+    contact_name VARCHAR(64) NOT NULL,
+    contact_email VARCHAR(64) NOT NULL,
+    reservation_day DATE NOT NULL,
+    reservation_hour VARCHAR(32),
+    amount_people SMALLINT,
+    observations TEXT,
+    trimester_id VARCHAR(12),
+    FOREIGN KEY (trimester_id) REFERENCES trimester(id)
 );

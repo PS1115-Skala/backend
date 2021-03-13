@@ -6,54 +6,57 @@ const Auth = require('../authentication/auth.js');
 const auth = new Auth();
 class UsersService {
   async getUser(userId) {
-    let query = `SELECT id, name, email, type, is_active, is_verified, chief FROM usuario WHERE id = '${userId}'`;
-    const requestsUsers = await pool.query(query);
-    return requestsUsers || [];
+    const query = `SELECT id, name, email, type, is_active, is_verified, chief FROM usuario WHERE id = $1`;
+    const requestsUsers = await pool.query(query, [userId]);
+    return requestsUsers;
   }
 
   async getUsers() {
-    let query = `SELECT id, name, email, type, is_active, is_verified, chief FROM usuario`;
+    const query = `SELECT id, name, email, type, is_active, is_verified, chief FROM usuario`;
     const requestsUsers = await pool.query(query);
-    return requestsUsers || [];
+    return requestsUsers;
   }
 
   async getAdminUsers() {
-    let query = `SELECT id, name, email, type, is_active, is_verified, chief FROM usuario WHERE type = '3333'`;
+    const query = `SELECT id, name, email, type, is_active, is_verified, chief FROM usuario WHERE type = '3333'`;
     const requestsUsers = await pool.query(query);
-    return requestsUsers || [];
+    return requestsUsers;
   }
 
   async getProfesor() {
-    let query = `SELECT id, name, email, type, is_active, is_verified, chief FROM usuario WHERE type = '2222'`;
+    const query = `SELECT id, name, email, type, is_active, is_verified, chief FROM usuario WHERE type = '2222'`;
     const profesores = await pool.query(query);
-    return profesores || [];
+    return profesores;
   }
 
   async registerUser(usbId, name, email, type, clave) {
     let query;
+    let values;
     if (clave != null) {
       const claveEncrypt = await auth.encryptPassword(clave);
       query = `INSERT into usuario (id, name, clave, email, type, is_active, is_verified, chief)
-        values('${usbId}', '${name}', '${claveEncrypt}', '${email}', '${type}', 1, true, '${usbId}')`;
+        values($1, $2, $3, $4, $5, 1, true, $6)`;
+      values = [usbId, name, claveEncrypt, email, type, usbId];
     } else {
       query = `INSERT into usuario (id,name, email, type, is_active, is_verified, chief)
-        values('${usbId}', '${name}', '${email}', '${type}', 0, false, '${usbId}')`;
+        values($1, $2, $3, $4, 0, false, $5)`;
+      values = [usbId, name, email, type, usbId];
     }
-    await pool.query(query);
+    await pool.query(query, values);
   }
 
   async verifyUser(usbId, clave) {
     const claveEncrypt = await auth.encryptPassword(clave);
-    let query = `UPDATE usuario SET clave = '${claveEncrypt}', is_active = '1', is_verified='true' WHERE id = '${usbId}'`;
-
-    const user_updated = await pool.query(query);
+    const query = `UPDATE usuario SET clave = $1, is_active = '1', is_verified='true' WHERE id = $2`;
+    const values = [claveEncrypt, usbId];
+    const user_updated = await pool.query(query, values);
     return user_updated;
   }
 
   async updateUser(id, data) {
     try {
-      let query = this.updateQueryUser(id, data);
-      const user_updated = await pool.query(query);
+      const { query, values } = this.updateQueryUser(id, data);
+      const user_updated = await pool.query(query, values);
       return user_updated;
     } catch (err) {
       throw new Error('Keys proporcionadas incorrectas.');
@@ -61,8 +64,8 @@ class UsersService {
   }
 
   async loginUser(usbId, clave) {
-    let query = `SELECT id, clave, type from usuario where id='${usbId}'`;
-    const login = await pool.query(query);
+    let query = `SELECT id, clave, type from usuario where id=$1`;
+    const login = await pool.query(query,[usbId]);
     const user = login.rows[0];
     if (login.rows < 1) {
       return 0;
@@ -110,23 +113,22 @@ class UsersService {
   };
 
   updateQueryUser(id, update) {
-    // Setup static beginning of query
     let query = ['UPDATE usuario'];
+    let set = [];
+    let values = [];
+
     query.push('SET');
 
-    // Create another array storing each set command
-    // and assigning a number value for parameterized query
-    let set = [];
-    Object.keys(update).forEach((key) => {
-      set.push(`${key} = '${update[key]}'`);
+    Object.keys(update).forEach((key,index) => {
+      set.push(`${key} = $${index+1}`);
+      values.push(update[key]);
     });
+
     query.push(set.join(', '));
-
-    // Add the WHERE statement to look up by id
-    query.push(`WHERE id = '${id}'`);
-
-    // Return a complete query string
-    return query.join(' ');
+    query.push(`WHERE id = $${Object.keys(update).length + 1}`);
+    values.push(id);
+    
+    return {query: query.join(' '), values: values };
   };
 }
 

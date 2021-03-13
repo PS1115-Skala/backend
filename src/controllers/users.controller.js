@@ -7,7 +7,6 @@ const boom = require('@hapi/boom');
 // Helper
 const fetch = require('node-fetch');
 const { URLSearchParams } = require('url');
-const { response } = require('express');
 const Auth = require('../authentication/auth.js');
 const auth = new Auth();
 
@@ -195,7 +194,7 @@ class UserController {
   createUser = async(req, res, next) => {
     try{
       const { usbId, userName, userEmail, userType } = req.body;
-      const password = usbId + '123'
+      const password = usbId + '123';
       await usersService.checkOrCreateUser(
         usbId,
         userName,
@@ -216,9 +215,8 @@ class UserController {
 
   updateUser = async(req, res, next) => {
     try{
-      const id = req.body.id;
+      const id = req.params.userId;
       const data = req.body;
-      delete data.id;
       await usersService.updateUser(id, data).then( () => {
         return res.status(200).json({ message: `Usuario ${id} actualizado correctamente.`});
       }).catch((err) => {
