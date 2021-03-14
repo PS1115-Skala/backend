@@ -19,7 +19,7 @@ const hasLabFilter = (labFilter) => labFilter ? true : false;
 const getRoomsOwnedByLab = async ({ labFilter }) => (await getAdminSalas(labFilter)).rows.map(({ id }) => id);
 
 const filterByLab = async ({ reservationsRequests, labFilter }) => {
-  const roomsOwned = getRoomsOwnedByLab(labFilter);
+  const roomsOwned = await getRoomsOwnedByLab(labFilter);
   const filteredReservationsRequest = reservationsRequests.filter(({ room_id }) => roomsOwned.includes(room_id));
   return filteredReservationsRequest
 }
