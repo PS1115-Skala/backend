@@ -1,7 +1,7 @@
-let chai = require('chai');
-let chaiHttp = require('chai-http');
-let app = require('../index');
-let expect = chai.expect;
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const app = require('../index');
+const expect = chai.expect;
 
 const { setupAdminToken, setupStudentToken } = require('../utils/helpers/setupTokens')
 

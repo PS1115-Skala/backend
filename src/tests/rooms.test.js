@@ -1,28 +1,29 @@
-//Require the dev-dependencies
-let chai = require('chai');
-let chaiHttp = require('chai-http');
-let app = require('../index');
-var expect = chai.expect;
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+
+const app = require('../index');
+const { setupAdminToken, setupStudentToken } = require('../utils/helpers/setupTokens')
 
 chai.use(chaiHttp);
+const expect = chai.expect;
 
-/*
-SALAS
-*/
 describe('Rooms', () => {
-    /*
-     * Test the /GET rooms.
-     */
+
+    let adminToken, studentToken;
+
+    before(async () => {
+        studentToken = await setupStudentToken();
+        adminToken = await setupAdminToken();
+    })
+
     describe('GET /api/salas', () => {
         it('it should get all rooms', (done) => {
             chai.request(app)
                 .get('/api/salas')
+                .set('x-access-token', studentToken)
                 .end((err, res) => {
-                    // need status 200
                     expect(res).to.have.status(200)
-                    // need type array
                     expect(res.body).be.a('array');
-                    // need length (spec)
                     expect(res.body.length).be.eql(7);
                     done();
                 });
@@ -33,15 +34,12 @@ describe('Rooms', () => {
         it('it should get Mys-018 room information', (done) => {
             chai.request(app)
                 .get('/api/salas/MYS-018')
+                .set('x-access-token', studentToken)
                 .end((err, res) => {
                     const room = res.body[0]
-                    // need status 200
                     expect(res).to.have.status(200)
-                    // need type array
                     expect(res.body).be.a('array');
-                    // need length 1
                     expect(res.body.length).be.eql(1);
-                    // Values
                     expect(room.id).to.have.equal("MYS-018");
                     expect(room.name).to.have.equal('Sala F');
                     expect(room.owner_id).to.have.equal('cchang');
@@ -55,12 +53,10 @@ describe('Rooms', () => {
         it('it should get all rooms owned by ldac', (done) => {
             chai.request(app)
                 .get('/api/salas/admin/ldac')
+                .set('x-access-token', studentToken)
                 .end((err, res) => {
-                    // need status 200
                     expect(res).to.have.status(200)
-                    // need type array
                     expect(res.body).be.a('array');
-                    // need length (3)
                     expect(res.body.length).be.equal(3);
                     done();
                 });
@@ -71,17 +67,14 @@ describe('Rooms', () => {
         it('it should get an image of MYS-019 (or default)  ', (done) => {
             chai.request(app)
                 .get('/api/salas/MYS-019/picture')
+                .set('x-access-token', studentToken)
                 .end((err, res) => {
-                    // need status 200
                     expect(res).to.have.status(200)
                     done();
                 });
         });
     });
 
-    /*
-     * Test the /POST
-     */
     describe('POST /api/salas/crear', () => {
         it('it should create new room: TES-001', (done) => {
             let room = {
@@ -95,22 +88,17 @@ describe('Rooms', () => {
             }
             chai.request(app)
                 .post('/api/salas/crear')
+                .set('x-access-token', adminToken)
                 .send(room)
                 .end((err, res) => {
-                    // status: 201
                     expect(res).to.have.status(201)
-                    // type: object message
                     expect(res.body).be.a('object');
-                    // message: Sala <name> Creada
                     expect(res.body.message).to.have.equal( `Sala ${room.id} Creada`)
                     done();
                 });
         });
     });
 
-    /*
-     * Test the /PUT
-     */
     describe('PUT /api/salas/TES-001', () => {
         it('it should update last room:  Sala de pruebas to Saladepruebas', (done) => {
             let id = "TES-001"
@@ -121,13 +109,11 @@ describe('Rooms', () => {
             }
             chai.request(app)
                 .put('/api/salas/' + id)
+                .set('x-access-token', adminToken)
                 .send(roomUpdate)
                 .end((err, res) => {
-                    // status: 200
                     expect(res).to.have.status(200)
-                    // type: object
                     expect(res.body).be.a('object');
-                    // message: Item <name> actualizado
                     expect(res.body.message).to.have.equal(`Sala Actualizada`)
                     done();
                 });
@@ -137,23 +123,23 @@ describe('Rooms', () => {
 })
 
 
-/*
-ITEMS EN LAS SALAS
-*/
 describe('Items in room', () => {
-    /*
-     * Testing /GETs
-     */
+
+    let adminToken, studentToken;
+
+    before(async () => {
+        studentToken = await setupStudentToken();
+        adminToken = await setupAdminToken();
+    })
+
     describe('GET /api/salas/MYS-019/items', () => {
         it('it should get all room items from MYS-019 ', (done) => {
             chai.request(app)
                 .get('/api/salas/MYS-019/items')
+                .set('x-access-token', studentToken)
                 .end((err, res) => {
-                    // need status 200
                     expect(res).to.have.status(200)
-                    // need type array
                     expect(res.body).be.a('array');
-                    // need length (3)
                     expect(res.body.length).be.eql(5);
                     done();
                 });
@@ -164,21 +150,16 @@ describe('Items in room', () => {
         it('it should get all room items not owned by MYS-019 ', (done) => {
             chai.request(app)
                 .get('/api/not/items/MYS-019')
+                .set('x-access-token', studentToken)
                 .end((err, res) => {
-                    // need status 200
                     expect(res).to.have.status(200)
-                    // need type array
                     expect(res.body).be.a('array');
-                    // need length (3)
                     expect(res.body.length).be.eql(6);
                     done();
                 });
         });
     });
 
-    /*
-     * Test the /POST
-     */
     describe('POST /api/salas/MYS-019/8', () => {
         it('it should add new item: Mesas x 12', (done) => {
             let item = {
@@ -186,22 +167,17 @@ describe('Items in room', () => {
             }
             chai.request(app)
                 .post('/api/salas/MYS-019/8')
+                .set('x-access-token', adminToken)
                 .send(item)
                 .end((err, res) => {
-                    // status: 201
                     expect(res).to.have.status(201)
-                    // type: object message
                     expect(res.body).be.a('object');
-                    // message: <quantity> items asignados a Sala <room_id>
                     expect(res.body.message).to.have.equal( item.quantity + ' items asignados a Sala MYS-019')
                     done();
                 });
         });
     });
 
-    /*
-     * Test the /PUT
-     */
     describe('PUT /api/salas/MYS-019/8', () => {
         it('it should update item Mesas quantity to 24', (done) => {
             let id = 8
@@ -210,38 +186,30 @@ describe('Items in room', () => {
             }
             chai.request(app)
                 .put('/api/salas/MYS-019/' + id)
+                .set('x-access-token', adminToken)
                 .send(itemUpdate)
                 .end((err, res) => {
-                    // status: 200
                     expect(res).to.have.status(200)
-                    // type: object
                     expect(res.body).be.a('object');
-                    // message: Item <name> actualizado
                     expect(res.body.message).to.have.equal(`Item actualizado en Sala MYS-019`)
                     done();
                 });
         });
     });
 
-    /*
-     * Test the /DELETE
-     */
     describe('DELETE /api/salas/MYS-019/8', () => {
         it('it should delete last item created: Mesas x 24 ', (done) => {
             chai.request(app)
                 .delete('/api/salas/MYS-019/8')
+                .set('x-access-token', adminToken)
                 .end((err, res) => {
-                    // status: 200
                     expect(res).to.have.status(200)
-                    // type: array
                     expect(res.body).be.a('array');
-                    // need length (3)
                     expect(res.body.length).be.eql(5);
                     done();
                 });
         });
     });
-
 
 })
 
