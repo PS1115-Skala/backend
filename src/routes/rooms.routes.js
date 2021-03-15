@@ -34,7 +34,7 @@ router.put('/salas/:salaId/:itemId', auth.isAdminLab, salasController.updateRoom
 router.put('/salas/:salaId', auth.isAdminLab, salasController.updateRoom);
 
 /* [TESTED] Crear una nueva sala */
-router.post('/salas/crear', auth.isAdminLab, salasController.createRoom);
+router.post('/salas/crear', auth.isLabF, salasController.createRoom);
 
 /* [TESTED] Agregar un item a la sala para el trimestre actual */
 router.post('/salas/:salaId/:itemId', auth.isAdminLab, salasController.addRoomItem);
