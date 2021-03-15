@@ -53,8 +53,6 @@ class MetricsService {
 
     if (hasLabFilter(labFilter)) reservationsRequests = filterByLab({ reservationsRequests, labFilter });
 
-    if (hasLabFilter(labFilter)) reservationsRequests = filterByLab({ reservationsRequests, labFilter });
-
     if (hasRoomFilter(roomFilter)) reservationsRequests = filterByRoom({ reservationsRequests, roomFilter });
 
     return reservationsRequests
