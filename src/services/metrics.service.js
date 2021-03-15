@@ -16,7 +16,7 @@ const filterByStatus = ({ reservationsRequests, statusFilter }) => reservationsR
 
 const hasLabFilter = (labFilter) => labFilter ? true : false;
 
-const getRoomsOwnedByLab = async ({ labFilter }) => (await getAdminSalas(labFilter)).rows.map(({ id }) => id);
+const getRoomsOwnedByLab = async (labFilter) => (await getAdminSalas(labFilter)).rows.map(({ id }) => id);
 
 const filterByLab = async ({ reservationsRequests, labFilter }) => {
   const roomsOwned = await getRoomsOwnedByLab(labFilter);
