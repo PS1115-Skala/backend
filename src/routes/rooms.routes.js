@@ -16,7 +16,7 @@ router.get('/salas/:salaId', auth.isLogged, salasController.specificRoom);
 router.get('/salas/:salaId/items', auth.isLogged, salasController.getRoomItems);
 
 /* [TESTED] Mostrar todos los items menos los de que ya posee una sala */
-router.get('/not/items/:roomId', auth.isLogged, salasController.itemsNoOwned);
+router.get('/not/items/:roomId', auth.isAdminLab, salasController.itemsNoOwned);
 
 /* [TESTED] Obtener todas las salas que son administradas por un laboratorio */
 router.get('/salas/admin/:userId', auth.isLogged, salasController.adminRooms);
