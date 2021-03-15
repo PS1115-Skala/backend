@@ -7,7 +7,7 @@ const auth = require('../middleware/authHandler');
 const trimesterController = new TrimesterController();
 
 /* DAEMON autoUpdate Trimester (used by script updateTrimester) */
-router.get('/actualizarTrimestre', auth.isLabF, trimesterController.autoUpdateTrim);
+// router.get('/actualizarTrimestre', auth.isLabF, trimesterController.autoUpdateTrim);
 
 /* [TESTED] GET actual trimester */
 router.get('/trimestre/ultimo', auth.isLogged, trimesterController.getLastTrimester);
