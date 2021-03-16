@@ -24,7 +24,7 @@ const auth = new Auth();
 */
 class UserController {
   // GET an User
-  async getUser(req, res, next) {
+  async getUser(req, res) {
     const userId = req.params.userId;
     try {
       const requestFromUser = await usersService.getUser(userId);
@@ -35,12 +35,11 @@ class UserController {
       }
     } catch (err) {
       res.status(500).json({ error: `Hubo un error en el servidor` });
-      next(err);
     }
   }
 
   // GET all users
-  async getUsers(req, res, next) {
+  async getUsers(req, res) {
     try {
       const requestFromUser = await usersService.getUsers();
       if (requestFromUser.rows.length) {
@@ -50,12 +49,11 @@ class UserController {
       }
     } catch (err) {
       res.status(500).json({ error: `Hubo un error en el servidor` });
-      next(err);
     }
   }
 
   // GET admins users
-  async getAdmins(req, res, next) {
+  async getAdmins(req, res) {
     try {
       const adminUsers = await usersService.getAdminUsers();
       if (adminUsers.rows.length) {
@@ -65,18 +63,16 @@ class UserController {
       }
     } catch (err) {
       res.status(500).json({ error: `Hubo un error en el servidor` });
-      next(err);
     }
   }
 
   // GET teachers and students (Standard user)
-  async getStandardUsers(req, res, next) {
+  async getStandardUsers(req, res) {
     try {
       const profesor = await usersService.getProfesor();
       res.status(200).send(profesor.rows);
     } catch (err) {
       res.status(500).json({ error: `Hubo un error en el servidor` });
-      next(err);
     }
   }
 
@@ -85,7 +81,7 @@ class UserController {
    */
 
   // POST registration user
-  signUp = async (req, res, next) => {
+  signUp = async (req, res) => {
     try {
       const { usbId, clave1, clave2 } = req.body;
       if (clave1 !== clave2) {
@@ -95,9 +91,8 @@ class UserController {
       await usersService.verifyUser(usbId, clave1);
       return res.status(204).send();
     } catch (err) {
-      const err_msgs = ['Token invalido', 'Falta Token'];
-      next(err);
-      if (err_msgs.includes(err.message)) {
+      const emsgs = ['Token invalido', 'Falta Token'];
+      if (emsgs.includes(err.message)) {
         return res.status(400).json({ error: err.message });
       } else {
         return res.status(500).json({ error: `Hubo un error en el servidor` });
@@ -106,7 +101,7 @@ class UserController {
   };
 
   // POST loggin user
-  async signIn(req, res, next) {
+  async signIn(req, res) {
     try {
       // Clave del sistema no del CAS
       const { usbId, clave } = req.body;
@@ -122,15 +117,14 @@ class UserController {
       res.json({ auth: true, token: login });
     } catch (err) {
       res.status(500).json({ error: `Hubo un error en el servidor` });
-      next(err);
     }
   }
 
   // Post userInfo. Obtener detalles de la USB.
-  userInfo = async (req, res, next) => {
+  userInfo = async (req, res) => {
     try {
       const { usbId, clave } = req.body;
-      const url = 'http://usbid.dst.usb.ve/cgi/check_user.py';
+      const url = 'http://usbid.dst.usb.ve/cgi/cheuser.py';
       const params = new URLSearchParams();
       params.append('uid', usbId);
       params.append('pwd', clave);
@@ -146,21 +140,21 @@ class UserController {
           .status(response.status)
           .json({ error: 'Error en servidor CAS' });
       }
-      const response_data = await response.json();
-      response_data['userType'] = usersService.getUserType(
-        response_data['uuid'],
-        response_data['userType']
+      const respondata = await response.json();
+      respondata['userType'] = usersService.getUserType(
+        respondata['uuid'],
+        respondata['userType']
       );
-      if (response_data['userType'] == 'null') {
+      if (respondata['userType'] == 'null') {
         return res
           .status(400)
           .json({ error: `Usuario no permitido en el sistema` });
       }
-      const userName = `${response_data['gname']} ${response_data['sname']}`;
+      const userName = `${respondata['gname']} ${respondata['sname']}`;
       const userEmail = `${usbId}@usb.ve`;
-      const userType = usersService.userTypeToNumber(response_data['userType']);
+      const userType = usersService.userTypeToNumber(respondata['userType']);
       const userTypeHuman = usersService.userTypeToHumanLabel(
-        response_data['userType']
+        respondata['userType']
       );
       await usersService.checkOrCreateUser(
         usbId,
@@ -182,11 +176,10 @@ class UserController {
         return res.status(400).json({ error: err });
       }
       res.status(500).json({ error: `Hubo un error en el servidor` });
-      next(err);
     }
   };
 
-  createUser = async (req, res, next) => {
+  createUser = async (req, res) => {
     try {
       const { usbId, userName, userEmail, userType } = req.body;
       const password = usbId + '123';
@@ -198,7 +191,6 @@ class UserController {
         });
       return res.status(201).json({ message: `Usuario ${usbId} creado.` });
     } catch (err) {
-      next(err);
       if (err.message === 'Usuario ya se encuentra activo') {
         return res.status(400).json({ error: err.message });
       }
@@ -206,7 +198,7 @@ class UserController {
     }
   };
 
-  updateUser = async (req, res, next) => {
+  updateUser = async (req, res) => {
     try {
       const id = req.params.userId;
       const data = req.body;
@@ -221,7 +213,6 @@ class UserController {
           throw err;
         });
     } catch (err) {
-      next(err);
 
       if (err.message == 'Keys proporcionadas incorrectas.') {
         return res.status(400).json({ error: err.message });
