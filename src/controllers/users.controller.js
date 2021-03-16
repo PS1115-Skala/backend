@@ -93,19 +93,13 @@ class UserController {
       }
       await auth.verifySignInToken(req, usbId);
       await usersService.verifyUser(usbId, clave1);
-      res.status(204).send();
+      return res.status(204).send();
     } catch (err) {
-      const err_msgs = [
-        'Token invalido',
-        'Token no pertenece al usuario',
-        'Falta Token'
-      ];
-      if (err_msgs.includes(err)) {
-        res.status(400).json({ error: err });
-        next(err);
+      const err_msgs = ['Token invalido', 'Falta Token'];
+      if (err_msgs.includes(err.message)) {
+        return res.status(400).json({ error: err.message });
       } else {
-        res.status(500).json({ error: `Hubo un error en el servidor` });
-        next(err);
+        return res.status(500).json({ error: `Hubo un error en el servidor` });
       }
     }
   };
