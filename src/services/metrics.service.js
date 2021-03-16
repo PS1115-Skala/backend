@@ -1,8 +1,8 @@
 const { getAdminSalas } = require('./rooms.service').prototype
 const pool = require('../data_base/pgConnect');
 
-const addDateCondition = ({ queryString, initDate = null, endDate }) => {
-  let filteredQuery = queryString + ' AND send_time <= $1'
+const addDateCondition = ({ query, initDate = null, endDate }) => {
+  let filteredQuery = query + ' AND send_time <= $1'
   const values = [endDate]
 
   if (initDate) filteredQuery = ' AND send_time >= $2' && values.push(initDate);
@@ -33,11 +33,11 @@ class MetricsService {
     const today = new Date()
     const { initDate = null, endDate = today, labFilter = null } = filters;
 
-    const query = "SELECT * from reservation_request WHERE status != 'E'"
+    const query = "SELECT * from reservation_request WHERE status != 'P'"
 
     const { filteredQuery, values } = addDateCondition({ query, initDate, endDate });
-
-    let reservationsRequests = (await pool.query(filteredQuery, values)).rows
+    
+    let reservationsRequests = (await pool.query(filteredQuery, values)).rows || []
 
     if (hasLabFilter(labFilter)) reservationsRequests = filterByLab({ reservationsRequests, labFilter });
 
