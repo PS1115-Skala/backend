@@ -1,25 +1,30 @@
-//Require the dev-dependencies
-let chai = require('chai');
-let chaiHttp = require('chai-http');
-let app = require('../index');
-var expect = chai.expect;
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+
+
+const app = require('../index');
+const { setupAdminToken, setupLabfToken } = require('../utils/helpers/setupTokens')
 
 chai.use(chaiHttp);
+const expect = chai.expect;
 
 describe('Room Requests', () => {
-    /*
-     * Test the /GET rooms.
-     */
+    
+    let adminToken, labfToken;
+
+    before(async () => {
+        labfToken = await setupLabfToken();
+        adminToken = await setupAdminToken();
+    })
+
     describe('GET /api/labf/solicitudes', () => {
         it('it should get all room Request', (done) => {
             chai.request(app)
                 .get('/api/labf/solicitudes')
+                .set('x-access-token', labfToken)
                 .end((err, res) => {
-                    // need status 200
                     expect(res).to.have.status(200)
-                    // need type array
                     expect(res.body).be.a('array');
-                    // need length (spec)
                     expect(res.body.length).be.eql(3);
                     done();
                 });
@@ -30,15 +35,12 @@ describe('Room Requests', () => {
         it('it should get all room request by ldac', (done) => {
             chai.request(app)
                 .get('/api/sala/solicitudes/crear/ldac')
+                .set('x-access-token', adminToken)
                 .end((err, res) => {
                     const roomRequest = res.body[0]
-                    // need status 200
                     expect(res).to.have.status(200)
-                    // need type array
                     expect(res.body).be.a('array');
-                    // need length (spec)
                     expect(res.body.length).be.eql(1);
-                    // body values
                     expect(roomRequest.id).to.have.equal('2');
                     expect(roomRequest.room_id).to.have.equal('MYS-006');
                     expect(roomRequest.owner_id).to.have.equal('cchang');
@@ -49,9 +51,6 @@ describe('Room Requests', () => {
         });
     });
 
-    /*
-     * Test the /GET rooms.
-     */
     describe('PUT /api/sala/solicitudes/2', () => {
         it('it should update last room:  Sala de pruebas to Saladepruebas', (done) => {
             let roomReqUpdate = {
@@ -59,22 +58,17 @@ describe('Room Requests', () => {
             }
             chai.request(app)
                 .put('/api/sala/solicitudes/2')
+                .set('x-access-token', labfToken)
                 .send(roomReqUpdate)
                 .end((err, res) => {
-                    // status: 200
                     expect(res).to.have.status(200)
-                    // type: object
                     expect(res.body).be.a('object');
-                    // message: Solicitud de agregar sala Atendida
                     expect(res.body.message).to.have.equal(`Solicitud de agregar sala Atendida`)
                     done();
                 });
         });
     });
 
-    /*
-     * Test the /POST
-     */
     describe('POST /api/sala/solicitudes/crear/ldac', () => {
         it('it should create a new room request', (done) => {
             let roomRequest = {
@@ -82,13 +76,11 @@ describe('Room Requests', () => {
             }
             chai.request(app)
                 .post('/api/sala/solicitudes/crear/ldac')
+                .set('x-access-token', adminToken)
                 .send(roomRequest)
                 .end((err, res) => {
-                    // status: 201
                     expect(res).to.have.status(201)
-                    // type: object message
                     expect(res.body).be.a('object');
-                    // message: <quantity> items asignados a Sala <room_id>
                     expect(res.body.message).to.have.equal( `Solicitud de sala ${roomRequest.room_id} creada exitosamente`)
                     done();
                 });
