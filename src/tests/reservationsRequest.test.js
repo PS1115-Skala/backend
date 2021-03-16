@@ -78,7 +78,7 @@ describe('Reservations requests', () => {
                 .end((err, res) => {
                     expect(res).to.have.status(200)
                     expect(res.body).be.a('array');
-                    expect(res.body.length).be.eql(12);
+                    expect(res.body.length).be.eql(54);
                     done();
                 });
         });

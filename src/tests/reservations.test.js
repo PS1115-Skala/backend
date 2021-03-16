@@ -90,7 +90,7 @@ describe('Reservations', () => {
         it('it should create a new reservation', (done) => {
             let reservation = [{
                 "requester": "ldac",
-                "subject": "PS1111",
+                "subject": "CI2693",
                 "room":"MYS-019",
                 "quantity": 10,
                 "material": "NADA",
@@ -107,7 +107,7 @@ describe('Reservations', () => {
                 .end((err, res) => {
                     expect(res).to.have.status(201)
                     expect(res.body).be.a('object');
-                    expect(res.body.message).to.have.equal( `Se creo exitosamente la reserva para la materia PS1111 en la sala MYS-019`)
+                    expect(res.body.message).to.have.equal( `Se creo exitosamente la reserva para la materia CI2693 en la sala MYS-019`)
                     done();
                 });
         });

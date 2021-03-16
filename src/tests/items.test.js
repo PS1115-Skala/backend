@@ -17,14 +17,14 @@ describe('Subjects', () => {
     })
 
     describe('GET /api/subjects', () => {
-        it('it should get 21 subjects', (done) => {
+        it('it should get 18 subjects', (done) => {
             chai.request(app)
                 .get('/api/subjects')
                 .set('x-access-token', studentToken)
                 .end((err, res) => {
                     expect(res).to.have.status(200)
                     expect(res.body).be.a('array');
-                    expect(res.body.length).be.eql(21);
+                    expect(res.body.length).be.eql(18);
                     done();
                 });
         });
