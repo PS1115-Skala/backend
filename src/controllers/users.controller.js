@@ -5,7 +5,7 @@ const usersService = new UsersService();
 const boom = require('@hapi/boom');
 
 // Helper
-const fetch = require('node-fetch');
+require('node-fetch');
 const { URLSearchParams } = require('url');
 const Auth = require('../authentication/auth.js');
 const auth = new Auth();
@@ -93,19 +93,14 @@ class UserController {
       }
       await auth.verifySignInToken(req, usbId);
       await usersService.verifyUser(usbId, clave1);
-      res.status(204).send();
+      return res.status(204).send();
     } catch (err) {
-      const err_msgs = [
-        'Token invalido',
-        'Token no pertenece al usuario',
-        'Falta Token'
-      ];
-      if (err_msgs.includes(err)) {
-        res.status(400).json({ error: err });
-        next(err);
+      const err_msgs = ['Token invalido', 'Falta Token'];
+      next(err);
+      if (err_msgs.includes(err.message)) {
+        return res.status(400).json({ error: err.message });
       } else {
-        res.status(500).json({ error: `Hubo un error en el servidor` });
-        next(err);
+        return res.status(500).json({ error: `Hubo un error en el servidor` });
       }
     }
   };
@@ -191,42 +186,47 @@ class UserController {
     }
   };
 
-  createUser = async(req, res, next) => {
-    try{
+  createUser = async (req, res, next) => {
+    try {
       const { usbId, userName, userEmail, userType } = req.body;
       const password = usbId + '123';
-      await usersService.checkOrCreateUser(
-        usbId,
-        userName,
-        userEmail,
-        userType,
-        password
-      ).then().catch(function(err) {
-        throw err
-      });
-      return res.status(201).json({ message: `Usuario ${usbId} creado.`});
-    } catch(err){
-      if (err === 'Usuario ya se encuentra activo') {
-        return res.status(400).json({ error: err });
+      await usersService
+        .checkOrCreateUser(usbId, userName, userEmail, userType, password)
+        .then()
+        .catch(function(err) {
+          throw err;
+        });
+      return res.status(201).json({ message: `Usuario ${usbId} creado.` });
+    } catch (err) {
+      next(err);
+      if (err.message === 'Usuario ya se encuentra activo') {
+        return res.status(400).json({ error: err.message });
       }
       return res.status(500).json({ error: `Hubo un error en el servidor` });
     }
   };
 
-  updateUser = async(req, res, next) => {
-    try{
+  updateUser = async (req, res, next) => {
+    try {
       const id = req.params.userId;
       const data = req.body;
-      await usersService.updateUser(id, data).then( () => {
-        return res.status(200).json({ message: `Usuario ${id} actualizado correctamente.`});
-      }).catch((err) => {
-        throw err
-      });
-    } catch(err){
-      if (err.message == 'Keys proporcionadas incorrectas.'){
+      await usersService
+        .updateUser(id, data)
+        .then(() => {
+          return res
+            .status(200)
+            .json({ message: `Usuario ${id} actualizado correctamente.` });
+        })
+        .catch(err => {
+          throw err;
+        });
+    } catch (err) {
+      next(err);
+
+      if (err.message == 'Keys proporcionadas incorrectas.') {
         return res.status(400).json({ error: err.message });
       }
-      return res.status(500).json({ error: 'Hubo un error en el servidor'});
+      return res.status(500).json({ error: 'Hubo un error en el servidor' });
     }
   };
 }
