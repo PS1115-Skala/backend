@@ -2,18 +2,19 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 
 const app = require('../index');
-const { setupAdminToken, setupStudentToken } = require('../utils/helpers/setupTokens')
+const { setupAdminToken, setupStudentToken, setupLabfToken } = require('../utils/helpers/setupTokens')
 
 chai.use(chaiHttp);
 const expect = chai.expect;
 
 describe('Rooms', () => {
 
-    let adminToken, studentToken;
+    let adminToken, studentToken, labfToken;
 
     before(async () => {
         studentToken = await setupStudentToken();
         adminToken = await setupAdminToken();
+        labfToken = await setupLabfToken();
     })
 
     describe('GET /api/salas', () => {
@@ -88,7 +89,7 @@ describe('Rooms', () => {
             }
             chai.request(app)
                 .post('/api/salas/crear')
-                .set('x-access-token', adminToken)
+                .set('x-access-token', labfToken)
                 .send(room)
                 .end((err, res) => {
                     expect(res).to.have.status(201)
@@ -150,7 +151,7 @@ describe('Items in room', () => {
         it('it should get all room items not owned by MYS-019 ', (done) => {
             chai.request(app)
                 .get('/api/not/items/MYS-019')
-                .set('x-access-token', studentToken)
+                .set('x-access-token', adminToken)
                 .end((err, res) => {
                     expect(res).to.have.status(200)
                     expect(res.body).be.a('array');
