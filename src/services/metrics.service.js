@@ -1,6 +1,6 @@
 const { getAdminSalas, getSalas } = require('./rooms.service').prototype;
 const { getAdminUsers } = require('./users.service').prototype;
-const { getSubjects, getSubjectsByDept, getSubjectsByCareer } = require('./subjects.service').prototype;
+const { getSubjects, getSubjectsByDept, getSubjectsByCareer, getSubjectsCareer} = require('./subjects.service').prototype;
 const { getDepartments } = require('./department.service').prototype;
 const { getCareersActive } = require('./careers.service').prototype;
 const pool = require('../data_base/pgConnect');
@@ -33,7 +33,11 @@ const getRequestStatusMetrics = (reservationsRequests) => ({
   request: [filterByStatus({reservationsRequests, statusFilter: 'A'}).length, filterByStatus({reservationsRequests, statusFilter: 'R'}).length] 
 });
 
-const getTotalStudentsMetrics = ({reservationsRequests, totalStudents}) => reservationsRequests.forEach(({ quantity }) => totalStudents += quantity);
+const getTotalStudentsMetrics = (reservationsRequests) => {
+  let totalStudents = 0;
+  reservationsRequests.forEach(({ quantity }) => totalStudents += quantity);
+  return totalStudents;
+}
 
 const getLabsByRoomsReservation = async (reservationsRequests) =>{
   const roomsByReservations = reservationsRequests.map(({room_id}) => room_id);
@@ -50,9 +54,8 @@ const getLabsReservation = async (reservationsRequests) => {
   return labsFiltered;
 };
 
-const getLaboratoriesMetrics = async (reservationsRequests) => {
-  let labsByReservation = await getLabsReservation(reservationsRequests);
-  labsByReservation.map(async ({ id, name }) => {
+const laboratoriesMapPromise = async ({ labsByReservation, reservationsRequests} ) => {
+  labsByReservation = labsByReservation.map(async ({ id, name }) => {
     let reservationByLab = await filterByLab({reservationsRequests, labFilter: id});
     return {
       labId: id, 
@@ -60,13 +63,19 @@ const getLaboratoriesMetrics = async (reservationsRequests) => {
       totalRequest: reservationByLab.length,
       totalApproved: filterByStatus({ reservationsRequests: reservationByLab, statusFilter: 'A' }).length, 
       totalRejected: filterByStatus({ reservationsRequests: reservationByLab, statusFilter: 'R' }).length,
-      totalStudents: getTotalStudentsMetrics({ reservationsRequests: reservationByLab, totalStudents: 0 })()
+      totalStudents: getTotalStudentsMetrics(reservationByLab)
     }
   });
+  return Promise.all(labsByReservation);
+}
+
+const getLaboratoriesMetrics = async (reservationsRequests) => {
+  let labsByReservation = await getLabsReservation(reservationsRequests);
+  labsByReservation = await laboratoriesMapPromise({ labsByReservation, reservationsRequests});
   return labsByReservation;
 };
 
-const filterBySubject = async ({ reservationsRequests, subjectFilter }) => reservationsRequests.filter(({ subject_id }) => subject_id === subjectFilter);
+const filterBySubject = ({ reservationsRequests, subjectFilter }) => reservationsRequests.filter(({ subject_id }) => subject_id === subjectFilter);
 
 const getSubjectsReservation = async (reservationsRequests) => {
   const subjectsByReservation = reservationsRequests.map(({ subject_id }) => subject_id);
@@ -77,64 +86,74 @@ const getSubjectsReservation = async (reservationsRequests) => {
 
 const getSubjectsMetrics = async (reservationsRequests) => {
   let subjectsByReservation = await getSubjectsReservation(reservationsRequests);
-  subjectsByReservation.map(({ id, name }) => {
+  subjectsByReservation = subjectsByReservation.map(({ id, name }) => {
     let reservationsRequestsBySubject = filterBySubject({ reservationsRequests, subjectFilter: id });
     return { 
       id,
       subjectName: name,
-      totalStudents: getTotalStudentsMetrics({ reservationsRequests: reservationsRequestsBySubject, totalStudents: 0})(),
+      totalStudents: getTotalStudentsMetrics(reservationsRequestsBySubject),
       totalRequests: reservationsRequestsBySubject.length
     };
   });
   return { count: subjectsByReservation.length, rows: subjectsByReservation};
 };
 
-const filterByDepartment = ({reservationsRequests, subjectsId}) => reservationsRequests.filter(({ room_id }) => subjectsId.includes(room_id));
+const filterReservationsBySubjects = ({reservationsRequests, subjectsId}) => reservationsRequests.filter(({ subject_id }) => subjectsId.includes(subject_id));
+
+const departmentsMapPromise = async ({ departmentsByReservation, reservationsRequests} ) => {
+  departmentsByReservation = departmentsByReservation.map(async ({ id, name }) =>{
+    const subjectsByDept = (await getSubjectsByDept(id)).rows.map(({ id }) => id);
+    let reservationsRequestsByDept = filterReservationsBySubjects({reservationsRequests, subjectsId: subjectsByDept});
+    return { 
+      id, 
+      deptName: name,
+      totalStudents: getTotalStudentsMetrics(reservationsRequestsByDept),
+      totalRequests: reservationsRequestsByDept.length
+    }
+  });
+  return Promise.all(departmentsByReservation);
+}
 
 const getDepartmentsMetrics = async (reservationsRequests) => {
   let subjectsByReservation = (await getSubjectsReservation(reservationsRequests)).map(({ dept }) => dept );
   let allDeparments = (await getDepartments()).rows;
   let departmentsByReservation = allDeparments.filter(({ id }) => subjectsByReservation.includes(id));
-  departmentsByReservation.map(async ({ id, name }) =>{
-    const subjectsByDept = (await getSubjectsByDept(id)).rows;
-    let reservationsRequestsByDept = filterByDepartment({reservationsRequests, subjectsId: subjectsByDept});
-    return { 
-      id, 
-      deptName: name,
-      totalStudents: getTotalStudentsMetrics({reservationsRequests: reservationsRequestsByDept, totalStudents: 0})(),
-      totalRequests: reservationsRequestsByDept.length
-    }
-  });
+  departmentsByReservation = await departmentsMapPromise({ departmentsByReservation, reservationsRequests });
   return { count: departmentsByReservation.length, rows: departmentsByReservation};
 };
 
 const getCareersReservation = async (reservationsRequests) => {
-  const subjectsByReservations = (await getSubjectsReservation(reservationsRequests)).map(({ career }) => career);
+  const subjectsByReservations = (await getSubjectsReservation(reservationsRequests)).map(({ id }) => id);
+  let subjectsCareer = (await getSubjectsCareer()).rows.filter(({ subject }) => subjectsByReservations.includes(subject));
+  subjectsCareer = subjectsCareer.map(({ career }) => career);
   const allCareers = (await getCareersActive()).rows;
-  let careersFiltered = allCareers.filter(({ id }) => subjectsByReservations.includes(id));
+  let careersFiltered = allCareers.filter(({ id }) => subjectsCareer.includes(id));
   return careersFiltered;
 };
 
-const filterByCareer = ({reservationsRequests, subjectsId}) => reservationsRequests.filter(({ subject_id }) => subjectsId.includes(subject_id));
-
 const filterByCareerType = ({ careers, filterType }) => careers.filter(({ type }) => type === filterType);
+
+const careerMapPromise = async ({ careersByReservation, reservationsRequests} ) => {
+  careersByReservation = careersByReservation.map(async ({ id, name, type }) => {
+    const subjectsByCareer = (await getSubjectsByCareer(id)).rows.map(({ subject }) => subject);
+    let reservationsByLab = filterReservationsBySubjects({reservationsRequests, subjectsId: subjectsByCareer});
+    return {
+      id, 
+      type,
+      career: name, 
+      totalStudents: getTotalStudentsMetrics(reservationsByLab),
+      totalRequests: reservationsByLab.length
+    };
+  });
+  return Promise.all(careersByReservation);
+}
 
 const getCareersMetrics = async (reservationsRequests) => {
   let careersByReservation = await getCareersReservation(reservationsRequests);
   const undergraduateLargeCount = filterByCareerType({ careers: careersByReservation, filterType: 1}).length;
   const undergraduateShortCount = filterByCareerType({ careers: careersByReservation, filterType: 0}).length;
   const postgraduateCount = filterByCareerType({ careers: careersByReservation, filterType: 2}).length;
-  careersByReservation.map(async ({ id, name, type }) => {
-    const subjectsByCareer = (await getSubjectsByCareer(id)).rows;
-    let reservationsByLab = filterByCareer({reservationsRequests, subjectsId: subjectsByCareer});
-    return {
-      id, 
-      type,
-      career: name, 
-      totalStudents: getTotalStudentsMetrics({reservationsRequests: reservationsByLab, totalStudents: 0})(),
-      totalRequests: reservationsByLab.length
-    };
-  });
+  careersByReservation = await careerMapPromise({ careersByReservation, reservationsRequests });
   return { 
     count: careersByReservation.length, 
     undergraduateLargeCount, 
@@ -171,12 +190,12 @@ class MetricsService {
   async getFormattedMetrics(reservationsRequests){
     const formattedData = {};
 
-    formattedData['requestStatus'] = getRequestStatusMetrics(reservationsRequests);
-    formattedData['totalStudents'] = getTotalStudentsMetrics({reservationsRequests, totalStudents: 0})();
-    formattedData['laboratories'] = getLaboratoriesMetrics(reservationsRequests);
-    formattedData['subjects'] = getSubjectsMetrics(reservationsRequests);
-    formattedData['department'] = getDepartmentsMetrics(reservationsRequests);
-    formattedData['careers'] = getCareersMetrics(reservationsRequests);
+    formattedData['requestStatus'] = await getRequestStatusMetrics(reservationsRequests);
+    formattedData['totalStudents'] = getTotalStudentsMetrics(reservationsRequests);
+    formattedData['laboratories'] = await getLaboratoriesMetrics(reservationsRequests);
+    formattedData['subjects'] = await getSubjectsMetrics(reservationsRequests);
+    formattedData['department'] = await getDepartmentsMetrics(reservationsRequests);
+    formattedData['careers'] = await getCareersMetrics(reservationsRequests);
 
     return formattedData;
   }

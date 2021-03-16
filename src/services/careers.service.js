@@ -8,7 +8,7 @@ class CareerService {
   }
 
   async getCareersActive() {
-    const query = `SELECT * FROM career WHERE is_active = 1`;
+    const query = `SELECT * FROM career WHERE is_active = true`;
     const careers = await pool.query(query);
     return careers;
   }

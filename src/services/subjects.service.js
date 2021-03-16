@@ -13,6 +13,12 @@ class SubjectsService {
     return subjects;
   }
 
+  async getSubjectsCareer(){
+    const query = 'SELECT * FROM career_subject';
+    const subjectsCareer = await pool.query(query);
+    return subjectsCareer;
+  }
+
   async getSubjectsByCareer(careerId){
     const query = 'SELECT subject FROM career_subject WHERE career = $1';
     const subjects = await pool.query(query, [careerId]);

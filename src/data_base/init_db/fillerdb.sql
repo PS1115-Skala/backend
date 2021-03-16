@@ -405,11 +405,11 @@ insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
 ('bwl', 'Laboratorio de Redes y Bases de Datos', 'bwl@usb.ve', 3333, false,0, 'mgoncalves');
 
-insert into usuario(id,name,email,type,is_verified,is_active, chief) values
-('CI', 'Departamento de Computación', 'dci@usb.ve', 0000, false, 0, 'CI');
+insert into usuario(id,name,email,type,is_verified,is_active, chief, clave) values
+('CI', 'Departamento de Computación', 'dci@usb.ve', 0000, false, 0, 'CI', '$2a$10$c8tYxQVE0.HHu9XVKSam.uarelO2Iqo6MBU1Wvu4mR5jkyvIpAuU.');
 
 insert into usuario(id,name,email,type,is_verified,is_active, chief) values
-('CO', 'Departamento de Cómputo Científico y Estadística', 'dept-co@usb.ve', 0000, false, 0, 'CI');
+('CO', 'Departamento de Cómputo Científico y Estadística', 'dept-co@usb.ve', 0000, false, 0, 'CO');
 
 /*Rellenamos la tabla de room*/
 
@@ -506,7 +506,7 @@ insert into reservation_request(requester_id, room_id, subject_id, send_time, tr
 values ('mgoncalves', 'MYS-015', 'CI3391', '2020-02-02', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 18, 'P');
 -- 8
 insert into reservation_request(requester_id, room_id, subject_id, send_time, trimester_id, material_needed, quantity, status)
-values ('mcorniel', 'MYS-221', 'PS1115', '2020-02-02', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 20, 'P');
+values ('mcorniel', 'MYS-221', 'PS1115', '2020-02-02', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 20, 'A');
 -- 9
 insert into reservation_request(requester_id, room_id, subject_id, send_time, trimester_id, material_needed, quantity, status)
 values ('CO', 'MYS-019', 'CO3321', '2020-02-02', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 26, 'P');
