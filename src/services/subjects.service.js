@@ -2,14 +2,20 @@ const pool = require('../data_base/pgConnect');
 
 class SubjectsService {
   async getSubjects() {
-    let query = `SELECT * FROM subject`;
+    const query = `SELECT * FROM subject`;
     const subjects = await pool.query(query);
     return subjects;
   }
 
   async getSubjectsByDept(deptId){
-    let query = 'SELECT id FROM subject WHERE dept = $1'
+    const query = 'SELECT id FROM subject WHERE dept = $1'
     const subjects = await pool.query(query, [deptId]);
+    return subjects;
+  }
+
+  async getSubjectsByCareer(careerId){
+    const query = 'SELECT subject FROM career_subject WHERE career = $1';
+    const subjects = await pool.query(query, [careerId]);
     return subjects;
   }
 }

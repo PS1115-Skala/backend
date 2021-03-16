@@ -1,7 +1,8 @@
 const { getAdminSalas, getSalas } = require('./rooms.service').prototype;
 const { getAdminUsers } = require('./users.service').prototype;
-const { getSubjects, getSubjectsByDept } = require('./subjects.service').prototype;
+const { getSubjects, getSubjectsByDept, getSubjectsByCareer } = require('./subjects.service').prototype;
 const { getDepartments } = require('./department.service').prototype;
+const { getCareersActive } = require('./careers.service').prototype;
 const pool = require('../data_base/pgConnect');
 
 const addDateCondition = ({ query, initDate = null, endDate }) => {
@@ -51,7 +52,7 @@ const getLabsReservation = async (reservationsRequests) => {
 
 const getLaboratoriesMetrics = async (reservationsRequests) => {
   let labsByReservation = await getLabsReservation(reservationsRequests);
-  labsByReservation.map(({ id, name }) => {
+  labsByReservation.map(async ({ id, name }) => {
     let reservationByLab = await filterByLab({reservationsRequests, labFilter: id});
     return {
       labId: id, 
@@ -81,31 +82,67 @@ const getSubjectsMetrics = async (reservationsRequests) => {
     return { 
       id,
       subjectName: name,
-      totalStudents: getTotalStudentsMetrics({ reservationsRequests: reservationsRequestsBySubject, totalStudents: 0}),
+      totalStudents: getTotalStudentsMetrics({ reservationsRequests: reservationsRequestsBySubject, totalStudents: 0})(),
       totalRequests: reservationsRequestsBySubject.length
     };
   });
   return { count: subjectsByReservation.length, rows: subjectsByReservation};
 };
 
-const filterByDepartment = ({reservationsRequests, subjectsId}) => reservationsRequests.filter(({room_id}) => subjectsId.includes(room_id));
+const filterByDepartment = ({reservationsRequests, subjectsId}) => reservationsRequests.filter(({ room_id }) => subjectsId.includes(room_id));
 
 const getDepartmentsMetrics = async (reservationsRequests) => {
   let subjectsByReservation = (await getSubjectsReservation(reservationsRequests)).map(({ dept }) => dept );
   let allDeparments = (await getDepartments()).rows;
   let departmentsByReservation = allDeparments.filter(({ id }) => subjectsByReservation.includes(id));
-  departmentsByReservation.map(({ id, name })=>{
-    const subjectsByDept = (await getSubjectsByDept).rows;
+  departmentsByReservation.map(async ({ id, name }) =>{
+    const subjectsByDept = (await getSubjectsByDept(id)).rows;
     let reservationsRequestsByDept = filterByDepartment({reservationsRequests, subjectsId: subjectsByDept});
     return { 
       id, 
       deptName: name,
-      totalStudents: getTotalStudentsMetrics({reservationsRequests: reservationsRequestsByDept, totalStudents: 0}),
+      totalStudents: getTotalStudentsMetrics({reservationsRequests: reservationsRequestsByDept, totalStudents: 0})(),
       totalRequests: reservationsRequestsByDept.length
     }
   });
   return { count: departmentsByReservation.length, rows: departmentsByReservation};
 };
+
+const getCareersReservation = async (reservationsRequests) => {
+  const subjectsByReservations = (await getSubjectsReservation(reservationsRequests)).map(({ career }) => career);
+  const allCareers = (await getCareersActive()).rows;
+  let careersFiltered = allCareers.filter(({ id }) => subjectsByReservations.includes(id));
+  return careersFiltered;
+};
+
+const filterByCareer = ({reservationsRequests, subjectsId}) => reservationsRequests.filter(({ subject_id }) => subjectsId.includes(subject_id));
+
+const filterByCareerType = ({ careers, filterType }) => careers.filter(({ type }) => type === filterType);
+
+const getCareersMetrics = async (reservationsRequests) => {
+  let careersByReservation = await getCareersReservation(reservationsRequests);
+  const undergraduateLargeCount = filterByCareerType({ careers: careersByReservation, filterType: 1}).length;
+  const undergraduateShortCount = filterByCareerType({ careers: careersByReservation, filterType: 0}).length;
+  const postgraduateCount = filterByCareerType({ careers: careersByReservation, filterType: 2}).length;
+  careersByReservation.map(async ({ id, name, type }) => {
+    const subjectsByCareer = (await getSubjectsByCareer(id)).rows;
+    let reservationsByLab = filterByCareer({reservationsRequests, subjectsId: subjectsByCareer});
+    return {
+      id, 
+      type,
+      career: name, 
+      totalStudents: getTotalStudentsMetrics({reservationsRequests: reservationsByLab, totalStudents: 0})(),
+      totalRequests: reservationsByLab.length
+    };
+  });
+  return { 
+    count: careersByReservation.length, 
+    undergraduateLargeCount, 
+    undergraduateShortCount, 
+    postgraduateCount,
+    rows: careersByReservation
+  };
+}
 
 class MetricsService {
 
@@ -129,39 +166,19 @@ class MetricsService {
     if (hasLabFilter(labFilter)) reservationsRequests = filterByLab({ reservationsRequests, labFilter });
 
     return reservationsRequests
-  }
+  };
 
   async getFormattedMetrics(reservationsRequests){
-    let data = {
-      requestStatus: {
-        status: [], // Solicitudes: Aprobado y Rechazados
-        requests: [] // Totales Aprobados y Totales Rechazados
-      },
-      totalStudents: 0, // Estudiantes Totales Atendidos
-      laboratories: [], // [{labId, labName, totalRequests, totalApproved, totalRejected, totalStudents}]
-      subjects: {
-        count: 0, // Materias Totales Atendidas
-        rows: [] // { id, subjectName, totalStudents, totalRequests }
-      },
-      department: {
-        count: 0, // Departamentos Totales Atendidos
-        rows: [] // { id, deptName, totalStudents, totalRequests }
-      },
-      careers: {
-        count: 0, // Carreras Totales Atendidas
-        undergraduateLarge: 0, // Carreras Largas Totales Atendidas
-        undergraduateShort: 0, // Carreras Cortas Totales Atendidos
-        postgraduate: 0, // Carreras Postgrado Totales Atendidos
-        rows: [] // { id, career, totalStudents, totalRequests }
-      }
-    };
+    const formattedData = {};
 
-    data['requestStatus'] = getRequestStatusMetrics(reservationsRequests); //ready
-    data['totalStudents'] = getTotalStudentsMetrics({reservationsRequests, totalStudents: 0})(); //ready
-    data['laboratories'] = getLaboratoriesMetrics(reservationsRequests);
-    data['subjects'] = getSubjectsMetrics(reservationsRequests);
-    data['department'] = getDepartmentsMetrics(reservationsRequests);
-    data['careers'] = getCareersMetrics(reservationsRequests);
+    formattedData['requestStatus'] = getRequestStatusMetrics(reservationsRequests);
+    formattedData['totalStudents'] = getTotalStudentsMetrics({reservationsRequests, totalStudents: 0})();
+    formattedData['laboratories'] = getLaboratoriesMetrics(reservationsRequests);
+    formattedData['subjects'] = getSubjectsMetrics(reservationsRequests);
+    formattedData['department'] = getDepartmentsMetrics(reservationsRequests);
+    formattedData['careers'] = getCareersMetrics(reservationsRequests);
+
+    return formattedData;
   }
 
   async usoDesdeFecha(room_id, fechaInicio) {
