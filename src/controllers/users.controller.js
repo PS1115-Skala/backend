@@ -91,8 +91,8 @@ class UserController {
       await usersService.verifyUser(usbId, clave1);
       return res.status(204).send();
     } catch (err) {
-      const emsgs = ['Token invalido', 'Falta Token'];
-      if (emsgs.includes(err.message)) {
+      const err_msgs = ['Token invalido', 'Falta Token'];
+      if (err_msgs.includes(err.message)) {
         return res.status(400).json({ error: err.message });
       } else {
         return res.status(500).json({ error: `Hubo un error en el servidor` });
@@ -124,7 +124,7 @@ class UserController {
   userInfo = async (req, res) => {
     try {
       const { usbId, clave } = req.body;
-      const url = 'http://usbid.dst.usb.ve/cgi/cheuser.py';
+      const url = 'http://usbid.dst.usb.ve/cgi/check_user.py';
       const params = new URLSearchParams();
       params.append('uid', usbId);
       params.append('pwd', clave);
@@ -140,21 +140,21 @@ class UserController {
           .status(response.status)
           .json({ error: 'Error en servidor CAS' });
       }
-      const respondata = await response.json();
-      respondata['userType'] = usersService.getUserType(
-        respondata['uuid'],
-        respondata['userType']
+      const response_data = await response.json();
+      response_data['userType'] = usersService.getUserType(
+        response_data['uuid'],
+        response_data['userType']
       );
-      if (respondata['userType'] == 'null') {
+      if (response_data['userType'] == 'null') {
         return res
           .status(400)
           .json({ error: `Usuario no permitido en el sistema` });
       }
-      const userName = `${respondata['gname']} ${respondata['sname']}`;
+      const userName = `${response_data['gname']} ${response_data['sname']}`;
       const userEmail = `${usbId}@usb.ve`;
-      const userType = usersService.userTypeToNumber(respondata['userType']);
+      const userType = usersService.userTypeToNumber(response_data['userType']);
       const userTypeHuman = usersService.userTypeToHumanLabel(
-        respondata['userType']
+        response_data['userType']
       );
       await usersService.checkOrCreateUser(
         usbId,
