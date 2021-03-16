@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const { tokenSecret } = require('../config/index');
 const Auth = require('../authentication/auth');
 const auth = new Auth();
+var fetchMock = require('fetch-mock');
 
 chai.use(chaiHttp);
 
@@ -381,24 +382,89 @@ describe('User', () => {
           expect(res.body.error).to.have.equal(`Falta Token`);
         });
     });
+  });
 
-    // to be considered
-    /*     it('it should fail user doesnt exists', async () => {
+  describe('POST /api/usario/usbInfo', () => {
+    function mockCorrectUsbCredentials() {
+      fetchMock.mock(
+        'http://usbid.dst.usb.ve/cgi/check_user.py',
+        {
+          has_mail: true,
+          sname: 'User Test',
+          uid: '11-1234678',
+          office: '',
+          mobile: '',
+          just_deployed: false,
+          sid: '11-1234678',
+          pid: '21563625',
+          telephone: '',
+          is_deployed: true,
+          deployable: true,
+          userType: 'U',
+          auto_deployable: false,
+          homephone: '',
+          gname: 'User Test',
+          department: '',
+          career: 'Tecnologia Electrica',
+          userClass: 'Estudiante de Pregrado',
+          has_gmail: true
+        },
+        {
+          method: 'POST',
+          headers: {
+            origin: 'http://usbid.dst.usb.ve'
+          }
+        }
+      );
+    }
+
+    function mockWrongUsbCredentials() {
+      fetchMock.mock('http://usbid.dst.usb.ve/cgi/check_user.py', 421, {
+        method: 'POST',
+        headers: {
+          origin: 'http://usbid.dst.usb.ve'
+        }
+      });
+    }
+
+    afterEach(() => {
+      fetchMock.restore();
+    });
+
+    it('it should fail wrong USB credentials', done => {
+      mockWrongUsbCredentials();
+      // User in fillerdb
       let user = {
-        usbId: 'invaliduser',
-        clave1: '12345678',
-        clave2: '12345678'
+        usbId: '15-10123',
+        clave: 'incorrectpassword'
       };
-      const token = await auth.createToken(user.usbId, 'U', '1800s');
       chai
         .request(app)
-        .post('/api/usario/signup')
-        .set('x-access-token', token)
+        .post('/api/usuario/userInfo')
         .send(user)
         .end((err, res) => {
-          // need status 500
-          expect(res).to.have.status(500);
+          // need status 400
+          expect(res).to.have.status(421);
+          expect(res.body.error).to.have.equal(`Error en servidor CAS`);
+          done();
         });
-    }); */
+    });
+
+    it('it should success USB credentials', done => {
+      mockCorrectUsbCredentials();
+      // User in fillerdb
+      let user = {
+        usbId: '11-1234678',
+        clave: 'correctpassw'
+      };
+      chai
+        .request(app)
+        .post('/api/usuario/userInfo')
+        .send(user)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          done();
+        });
+    });
   });
 });

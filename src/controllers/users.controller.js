@@ -5,7 +5,7 @@ const usersService = new UsersService();
 const boom = require('@hapi/boom');
 
 // Helper
-const fetch = require('node-fetch');
+require('node-fetch');
 const { URLSearchParams } = require('url');
 const Auth = require('../authentication/auth.js');
 const auth = new Auth();
@@ -96,6 +96,7 @@ class UserController {
       return res.status(204).send();
     } catch (err) {
       const err_msgs = ['Token invalido', 'Falta Token'];
+      next(err);
       if (err_msgs.includes(err.message)) {
         return res.status(400).json({ error: err.message });
       } else {
@@ -197,6 +198,7 @@ class UserController {
         });
       return res.status(201).json({ message: `Usuario ${usbId} creado.` });
     } catch (err) {
+      next(err);
       if (err.message === 'Usuario ya se encuentra activo') {
         return res.status(400).json({ error: err.message });
       }
@@ -219,6 +221,8 @@ class UserController {
           throw err;
         });
     } catch (err) {
+      next(err);
+
       if (err.message == 'Keys proporcionadas incorrectas.') {
         return res.status(400).json({ error: err.message });
       }

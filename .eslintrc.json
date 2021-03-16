@@ -9,6 +9,9 @@
         "node": true,
         "mocha": true
     },
+    "globals": {
+    "fetch": false
+    },
     "rules": {
         "no-console": "warn"
     }
