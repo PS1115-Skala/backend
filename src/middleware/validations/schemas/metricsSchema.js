@@ -7,7 +7,7 @@ const actualTrim = async () => (await getActualTrim()).rows[0].id
 const metricsSchema = async () => Joi.object().keys({
     initTrim: Joi.string().default(await actualTrim()),
     endTrim: Joi.string().default(await actualTrim()),
-    labFilter: Joi.date().default(null),
+    labFilter: Joi.string().default(null),
 });
 
 // EXAMPLE Schemas con defaults sin promesas

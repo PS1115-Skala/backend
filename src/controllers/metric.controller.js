@@ -18,7 +18,6 @@ const trimestersService = new TrimestersService();
 class MetricsController {
   
   async getStandardMetrics(req, res) {
-
     const { initTrim, endTrim, labFilter } = req.query
     const { start: initDate } = await trimestersService.getSpecificTrim(initTrim);
     const { finish: endDate } = await trimestersService.getSpecificTrim(endTrim);
