@@ -384,7 +384,7 @@ describe('User', () => {
     });
   });
 
-  describe('POST /api/usario/usbInfo', () => {
+  describe.skip('POST /api/usario/usbInfo', () => {
     function mockCorrectUsbCredentials() {
       fetchMock.mock(
         'http://usbid.dst.usb.ve/cgi/check_user.py',
@@ -431,6 +431,23 @@ describe('User', () => {
       fetchMock.restore();
     });
 
+    it('it should success USB credentials', done => {
+      mockCorrectUsbCredentials();
+      // User in fillerdb
+      let user = {
+        usbId: '11-1234678',
+        clave: 'correctpassw'
+      };
+      chai
+        .request(app)
+        .post('/api/usuario/userInfo')
+        .send(user)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          done();
+        });
+    });
+
     it('it should fail wrong USB credentials', done => {
       mockWrongUsbCredentials();
       // User in fillerdb
@@ -446,23 +463,6 @@ describe('User', () => {
           // need status 400
           expect(res).to.have.status(421);
           expect(res.body.error).to.have.equal(`Error en servidor CAS`);
-          done();
-        });
-    });
-
-    it('it should success USB credentials', done => {
-      mockCorrectUsbCredentials();
-      // User in fillerdb
-      let user = {
-        usbId: '11-1234678',
-        clave: 'correctpassw'
-      };
-      chai
-        .request(app)
-        .post('/api/usuario/userInfo')
-        .send(user)
-        .end((err, res) => {
-          expect(res).to.have.status(200);
           done();
         });
     });
