@@ -384,7 +384,7 @@ describe('User', () => {
     });
   });
 
-  describe.skip('POST /api/usario/usbInfo', () => {
+  describe('POST /api/usario/usbInfo', () => {
     function mockCorrectUsbCredentials() {
       fetchMock.mock(
         'http://usbid.dst.usb.ve/cgi/check_user.py',
@@ -444,6 +444,12 @@ describe('User', () => {
         .send(user)
         .end((err, res) => {
           expect(res).to.have.status(200);
+          // Asegurarnos que se obtuvieron los datos del Mock
+          expect(res.body.usbId).to.have.equal('11-1234678');
+          expect(res.body.name).to.have.equal('User Test User Test');
+          expect(res.body.userType).to.have.equal('Estudiante');
+          const verifyToken = jwt.verify(res.body.token, tokenSecret);
+          expect(verifyToken).to.be.ok;
           done();
         });
     });
@@ -460,7 +466,6 @@ describe('User', () => {
         .post('/api/usuario/userInfo')
         .send(user)
         .end((err, res) => {
-          // need status 400
           expect(res).to.have.status(421);
           expect(res.body.error).to.have.equal(`Error en servidor CAS`);
           done();

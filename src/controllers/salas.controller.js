@@ -190,7 +190,6 @@ class SalaController {
       const salaItems = await roomsService.getSalaItems(salaId);
       res.status(200).send(salaItems.rows);
     } catch (err) {
-      console.log(err);
       res.status(500).json({ error: `Hubo un error en el servidor` });
       next(err);
     }
