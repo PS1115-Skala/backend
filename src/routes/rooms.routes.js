@@ -22,7 +22,7 @@ router.get('/not/items/:roomId', auth.isAdminLab, salasController.itemsNoOwned);
 router.get('/salas/admin/:userId', auth.isLogged, salasController.adminRooms);
 
 /* [TESTED] Obtener la imagen de una sala */
-router.get('/salas/:salaId/picture', auth.isLogged, salasController.getImageRoom);
+router.get('/salas/:salaId/picture', salasController.getImageRoom);
 
 /* [TESTED] Eliminar un item de una sala en el trimestre actual */
 router.delete('/salas/:salaId/:itemId', auth.isAdminLab, salasController.deleteRoomItem);
