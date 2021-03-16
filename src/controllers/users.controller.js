@@ -5,7 +5,7 @@ const usersService = new UsersService();
 const boom = require('@hapi/boom');
 
 // Helper
-require('node-fetch');
+const fetch = require('node-fetch');
 const { URLSearchParams } = require('url');
 const Auth = require('../authentication/auth.js');
 const auth = new Auth();
@@ -140,6 +140,7 @@ class UserController {
           .status(response.status)
           .json({ error: 'Error en servidor CAS' });
       }
+      console.log("AQUI NOOOOOOOOO?");
       const response_data = await response.json();
       response_data['userType'] = usersService.getUserType(
         response_data['uuid'],
@@ -172,9 +173,11 @@ class UserController {
       };
       res.json(userResponse);
     } catch (err) {
-      if (err === 'Usuario ya se encuentra activo') {
-        return res.status(400).json({ error: err });
+      console.log(err);
+      if (err.message === 'Usuario ya se encuentra activo') {
+        return res.status(400).json({ error: err.message });
       }
+      console.log("AQUI NOOOOOOOOO?");
       res.status(500).json({ error: `Hubo un error en el servidor` });
     }
   };
