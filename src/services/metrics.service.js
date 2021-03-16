@@ -28,6 +28,19 @@ const hasRoomFilter = (roomFilter) => roomFilter ? true : false;
 
 const filterByRoom = ({ reservationsRequests, roomFilter }) => reservationsRequests.filter(({ room_id }) => room_id === roomFilter);
 
+// Formatting Metrics
+
+const filterByStatus = ({ reservationsRequests, statusFilter }) => reservationsRequests.filter(({ status }) => status === statusFilter);
+
+const getRequestStatusMetrics = (reservationsRequests) => ({ 
+  status: ['Aprobados', 'Rechazados'],
+  request: [filterByStatus({reservationsRequests, statusFilter: 'A'}).length, filterByStatus({reservationsRequests, statusFilter: 'R'}).length] 
+});
+
+const getTotalStudentsMetrics = ({reservationsRequests, totalStudents}) => reservationsRequests.forEach(({ quantity }) => totalStudents += quantity);
+
+
+
 class MetricsService {
 
   /**
@@ -56,6 +69,41 @@ class MetricsService {
     if (hasRoomFilter(roomFilter)) reservationsRequests = filterByRoom({ reservationsRequests, roomFilter });
 
     return reservationsRequests
+  }
+
+  async getFormattedMetrics(reservationsRequests){
+    let data = {
+      requestStatus: {
+        status: [], // Solicitudes: Aprobado y Rechazados
+        requests: [] // Totales Aprobados y Totales Rechazados
+      },
+      totalStudents: 0, // Estudiantes Totales Atendidos
+      laboratories: {
+        rows: [] // {lab, totalRequest, totalApproved, totalRejected, totalStudents}
+      },
+      subjects: {
+        count: 0, // Materias Totales Atendidas
+        rows: [] // { id, subjectName, totalStudent, totalRequest }
+      },
+      department: {
+        count: 0, // Departamentos Totales Atendidos
+        rows: [] // { id, deptName, totalStudent, totalRequest }
+      },
+      careers: {
+        count: 0, // Carreras Totales Atendidas
+        undergraduateLarge: 0, // Carreras Largas Totales Atendidas
+        undergraduateShort: 0, // Carreras Cortas Totales Atendidos
+        postgraduate: 0, // Carreras Postgrado Totales Atendidos
+        rows: [] // { id, career, totalStudent, totalRequest }
+      }
+    };
+
+    data['requestStatus'] = getRequestStatusMetrics(reservationsRequests); //ready
+    data['totalStudents'] = getTotalStudentsMetrics({reservationsRequests, totalStudents: 0})(); //ready
+    data['laboratories'] = getLaboratoriesMetrics(reservationsRequests);
+    data['subjects'] = getSubjectsMetrics(reservationsRequests);
+    data['department'] = getDepartmentsMetrics(reservationsRequests);
+    data['careers'] = getCareersMetrics(reservationsRequests);
   }
 
   async usoDesdeFecha(room_id, fechaInicio) {
