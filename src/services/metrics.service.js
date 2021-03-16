@@ -1,6 +1,49 @@
+const { getAdminSalas } = require('./rooms.service').prototype
 const pool = require('../data_base/pgConnect');
 
+const addDateCondition = ({ query, initDate = null, endDate }) => {
+  let filteredQuery = query + ' AND send_time <= $1'
+  const values = [endDate]
+
+  if (initDate) { filteredQuery += ' AND send_time >= $2';  values.push(initDate); }
+
+  return { filteredQuery, values }
+}
+
+const hasLabFilter = (labFilter) => labFilter ? true : false;
+
+const getRoomsOwnedByLab = async (labFilter) => (await getAdminSalas(labFilter)).rows.map(({ id }) => id);
+
+const filterByLab = async ({ reservationsRequests, labFilter }) => {
+  const roomsOwned = await getRoomsOwnedByLab(labFilter);
+  const filteredReservationsRequest = reservationsRequests.filter(({ room_id }) => roomsOwned.includes(room_id));
+  return filteredReservationsRequest
+}
+
 class MetricsService {
+
+  /**
+   * @param {Object} filters - filters options 
+   * @param {Object} filters.endDate? - endDate filter
+   * @param {Object} filters.initDate? - initial filter
+   * @param {Object} filters.labFilter? - lab filter: ldac || ldac..  
+   * @returns {Promise<Array<Object>>} reservations requests metrics
+   */
+  async getReservationsRequests(filters) {
+    const today = new Date()
+    const { initDate, endDate = today, labFilter} = filters;
+
+    const query = "SELECT * from reservation_request WHERE status != 'P'"
+    
+    const { filteredQuery, values } = addDateCondition({ query, initDate, endDate });
+    
+    let reservationsRequests = (await pool.query(filteredQuery, values)).rows || []
+
+    if (hasLabFilter(labFilter)) reservationsRequests = filterByLab({ reservationsRequests, labFilter });
+
+    return reservationsRequests
+  }
+
   async usoDesdeFecha(room_id, fechaInicio) {
     let query = `SELECT sum(quantity) from reservation_request WHERE status='A' and send_time> '${fechaInicio}' and room_id='${room_id}'`;
     const request = await pool.query(query);

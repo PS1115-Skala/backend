@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS room_request(
     trimester_id VARCHAR(12) NOT NULL,
     FOREIGN KEY (trimester_id) REFERENCES trimester(id),
     date DATE NOT NULL,
-    status CHAR(1) --A(aprobado),R(rechazado),E(espera)
+    status CHAR(1) --A(aprobado),R(rechazado),P(pendiente)
 );
 
 CREATE TABLE IF NOT EXISTS room_item(
