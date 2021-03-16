@@ -1,18 +1,17 @@
-const { getAdminSalas } = require('./rooms.service').prototype
+const { getAdminSalas, getSalas } = require('./rooms.service').prototype;
+const { getAdminUsers } = require('./users.service').prototype;
+const { getSubjects, getSubjectsByDept } = require('./subjects.service').prototype;
+const { getDepartments } = require('./department.service').prototype;
 const pool = require('../data_base/pgConnect');
 
-const addDateCondition = ({ queryString, initDate = null, endDate }) => {
-  let filteredQuery = queryString + ' send_time <= $1'
+const addDateCondition = ({ query, initDate = null, endDate }) => {
+  let filteredQuery = query + ' AND send_time <= $1'
   const values = [endDate]
 
   if (initDate) filteredQuery = ' AND send_time >= $2' && values.push(initDate);
 
   return { filteredQuery, values }
 }
-
-const hasStatusFilter = (statusFilter) => statusFilter ? true : false;
-
-const filterByStatus = ({ reservationsRequests, statusFilter }) => reservationsRequests.filter(({ status }) => status === statusFilter);
 
 const hasLabFilter = (labFilter) => labFilter ? true : false;
 
@@ -23,10 +22,6 @@ const filterByLab = async ({ reservationsRequests, labFilter }) => {
   const filteredReservationsRequest = reservationsRequests.filter(({ room_id }) => roomsOwned.includes(room_id));
   return filteredReservationsRequest
 }
-
-const hasRoomFilter = (roomFilter) => roomFilter ? true : false;
-
-const filterByRoom = ({ reservationsRequests, roomFilter }) => reservationsRequests.filter(({ room_id }) => room_id === roomFilter);
 
 // Formatting Metrics
 
@@ -39,7 +34,78 @@ const getRequestStatusMetrics = (reservationsRequests) => ({
 
 const getTotalStudentsMetrics = ({reservationsRequests, totalStudents}) => reservationsRequests.forEach(({ quantity }) => totalStudents += quantity);
 
+const getLabsByRoomsReservation = async (reservationsRequests) =>{
+  const roomsByReservations = reservationsRequests.map(({room_id}) => room_id);
+  const allRooms = (await getSalas()).rows;
+  let filteredRooms = allRooms.filter(({ id }) => roomsByReservations.includes(id));
+  const labsByRooms = filteredRooms.map(({ manager_id }) => manager_id);
+  return labsByRooms;
+};
 
+const getLabsReservation = async (reservationsRequests) => {
+  const labsByRooms = await getLabsByRoomsReservation(reservationsRequests);
+  const allLabs = (await getAdminUsers()).rows;
+  const labsFiltered = allLabs.filter(({ id }) => labsByRooms.includes(id));
+  return labsFiltered;
+};
+
+const getLaboratoriesMetrics = async (reservationsRequests) => {
+  let labsByReservation = await getLabsReservation(reservationsRequests);
+  labsByReservation.map(({ id, name }) => {
+    let reservationByLab = await filterByLab({reservationsRequests, labFilter: id});
+    return {
+      labId: id, 
+      labName: name, 
+      totalRequest: reservationByLab.length,
+      totalApproved: filterByStatus({ reservationsRequests: reservationByLab, statusFilter: 'A' }).length, 
+      totalRejected: filterByStatus({ reservationsRequests: reservationByLab, statusFilter: 'R' }).length,
+      totalStudents: getTotalStudentsMetrics({ reservationsRequests: reservationByLab, totalStudents: 0 })()
+    }
+  });
+  return labsByReservation;
+};
+
+const filterBySubject = async ({ reservationsRequests, subjectFilter }) => reservationsRequests.filter(({ subject_id }) => subject_id === subjectFilter);
+
+const getSubjectsReservation = async (reservationsRequests) => {
+  const subjectsByReservation = reservationsRequests.map(({ subject_id }) => subject_id);
+  const allSubjects = (await getSubjects()).rows;
+  const subjectsFiltered = allSubjects.filter(({ id }) => subjectsByReservation.includes(id));
+  return subjectsFiltered;
+};
+
+const getSubjectsMetrics = async (reservationsRequests) => {
+  let subjectsByReservation = await getSubjectsReservation(reservationsRequests);
+  subjectsByReservation.map(({ id, name }) => {
+    let reservationsRequestsBySubject = filterBySubject({ reservationsRequests, subjectFilter: id });
+    return { 
+      id,
+      subjectName: name,
+      totalStudents: getTotalStudentsMetrics({ reservationsRequests: reservationsRequestsBySubject, totalStudents: 0}),
+      totalRequests: reservationsRequestsBySubject.length
+    };
+  });
+  return { count: subjectsByReservation.length, rows: subjectsByReservation};
+};
+
+const filterByDepartment = ({reservationsRequests, subjectsId}) => reservationsRequests.filter(({room_id}) => subjectsId.includes(room_id));
+
+const getDepartmentsMetrics = async (reservationsRequests) => {
+  let subjectsByReservation = (await getSubjectsReservation(reservationsRequests)).map(({ dept }) => dept );
+  let allDeparments = (await getDepartments()).rows;
+  let departmentsByReservation = allDeparments.filter(({ id }) => subjectsByReservation.includes(id));
+  departmentsByReservation.map(({ id, name })=>{
+    const subjectsByDept = (await getSubjectsByDept).rows;
+    let reservationsRequestsByDept = filterByDepartment({reservationsRequests, subjectsId: subjectsByDept});
+    return { 
+      id, 
+      deptName: name,
+      totalStudents: getTotalStudentsMetrics({reservationsRequests: reservationsRequestsByDept, totalStudents: 0}),
+      totalRequests: reservationsRequestsByDept.length
+    }
+  });
+  return { count: departmentsByReservation.length, rows: departmentsByReservation};
+};
 
 class MetricsService {
 
@@ -47,26 +113,20 @@ class MetricsService {
    * @param {Object} filters - filters options 
    * @param {Object} filters.endDate? - endDate filter
    * @param {Object} filters.initDate? - initial filter
-   * @param {Object} filters.statusFilter? - status filter: A || R || E  
    * @param {Object} filters.labFilter? - lab filter: ldac || ldac..  
-   * @param {Object} filters.roomFilter? - room filter: MYS-020 || MYS-019..  
    * @returns {Promise<Array<Object>>} reservations requests metrics
    */
   async getReservationsRequests(filters) {
     const today = new Date()
-    const { statusFilter, initDate, endDate = today, labFilter, roomFilter } = filters;
+    const { initDate = null, endDate = today, labFilter = null } = filters;
 
-    const query = 'SELECT * from reservation_request WHERE'
+    const query = "SELECT * from reservation_request WHERE status != 'P'"
 
     const { filteredQuery, values } = addDateCondition({ query, initDate, endDate });
-
-    let reservationsRequests = (await pool.query(filteredQuery, values)).rows
-
-    if (hasStatusFilter(statusFilter)) reservationsRequests = filterByStatus({ reservationsRequests, statusFilter });
+    
+    let reservationsRequests = (await pool.query(filteredQuery, values)).rows || []
 
     if (hasLabFilter(labFilter)) reservationsRequests = filterByLab({ reservationsRequests, labFilter });
-
-    if (hasRoomFilter(roomFilter)) reservationsRequests = filterByRoom({ reservationsRequests, roomFilter });
 
     return reservationsRequests
   }
@@ -78,23 +138,21 @@ class MetricsService {
         requests: [] // Totales Aprobados y Totales Rechazados
       },
       totalStudents: 0, // Estudiantes Totales Atendidos
-      laboratories: {
-        rows: [] // {lab, totalRequest, totalApproved, totalRejected, totalStudents}
-      },
+      laboratories: [], // [{labId, labName, totalRequests, totalApproved, totalRejected, totalStudents}]
       subjects: {
         count: 0, // Materias Totales Atendidas
-        rows: [] // { id, subjectName, totalStudent, totalRequest }
+        rows: [] // { id, subjectName, totalStudents, totalRequests }
       },
       department: {
         count: 0, // Departamentos Totales Atendidos
-        rows: [] // { id, deptName, totalStudent, totalRequest }
+        rows: [] // { id, deptName, totalStudents, totalRequests }
       },
       careers: {
         count: 0, // Carreras Totales Atendidas
         undergraduateLarge: 0, // Carreras Largas Totales Atendidas
         undergraduateShort: 0, // Carreras Cortas Totales Atendidos
         postgraduate: 0, // Carreras Postgrado Totales Atendidos
-        rows: [] // { id, career, totalStudent, totalRequest }
+        rows: [] // { id, career, totalStudents, totalRequests }
       }
     };
 

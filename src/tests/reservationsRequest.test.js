@@ -1,7 +1,7 @@
-let chai = require('chai');
-let chaiHttp = require('chai-http');
-let app = require('../index');
-let expect = chai.expect;
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const app = require('../index');
+const expect = chai.expect;
 
 const { setupAdminToken, setupStudentToken } = require('../utils/helpers/setupTokens')
 
@@ -78,7 +78,7 @@ describe('Reservations requests', () => {
                 .end((err, res) => {
                     expect(res).to.have.status(200)
                     expect(res.body).be.a('array');
-                    expect(res.body.length).be.eql(13);
+                    expect(res.body.length).be.eql(12);
                     done();
                 });
         });

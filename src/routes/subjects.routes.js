@@ -6,12 +6,6 @@ const auth = require('../middleware/authHandler');
 
 const subjectController = new SubjectsController();
 
-/*
- ***************************************************************
- ************************ SUBJECTS ROUTES ************************
- *******************************************************************
- */
-
 /* [TESTED] Obtener todas las materias en el sistema */
 router.get('/subjects', auth.isLogged ,subjectController.getSubjects);
 

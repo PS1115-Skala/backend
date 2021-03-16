@@ -348,7 +348,7 @@ insert into reservation_request(requester_id, room_id, subject_id, trimester_id,
 values ('13-11341', 'MYS-019', 'CI2691', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 40, 'P');
 -- 16
 insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
-values ('eduardo', 'MYS-020', 'CI2691', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 30, 'P');
+values ('eduardo', 'MYS-020', 'CI2691', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 30, 'A');
 /*Rellenamos reserve_req_schedule*/
 
 insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 1, 2);
