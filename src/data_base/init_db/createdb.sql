@@ -35,6 +35,25 @@ CREATE TABLE IF NOT EXISTS subject(
     FOREIGN KEY (dept) REFERENCES dept(id)
 );
 
+-- Solo los labs pueden agregar mas carreras
+-- El front tiene que permitirte crear el carreras mediante un modal
+CREATE TABLE IF NOT EXISTS career(
+    id VARCHAR(4) PRIMARY KEY,
+    name VARCHAR(128),
+    is_active BOOLEAN NOT NULL,
+    type SMALLINT -- 0 = Cortas, 1 = Largas, 3 = Postgrado
+);
+
+-- Solo los labs pueden agregar mas carreras
+-- El front tiene que permitirte crear el carreras mediante un modal
+CREATE TABLE IF NOT EXISTS career_subject(
+    id BIGSERIAL PRIMARY KEY,
+    career VARCHAR(4) NOT NULL,
+    subject VARCHAR(6) NOT NULL,
+    FOREIGN KEY (career) REFERENCES career(id),
+    FOREIGN KEY (subject) REFERENCES subject(id)
+);
+
 CREATE TABLE IF NOT EXISTS usuario(
     id VARCHAR(64) PRIMARY KEY,
     name VARCHAR(64) NOT NULL,
