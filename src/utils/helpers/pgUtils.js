@@ -8,6 +8,6 @@
  * @param {Array<String>} Obj.values? - params values 
  * @returns {Promise<Object>}
  */
-const findOne = async ({pool, query, values = []}) => (await pool.query(query, values)).rows[0]
+const findOne = async ({pool, query, values = []}) => (await pool.query(query, values)).rows[0] || false
 
 module.exports = { findOne }

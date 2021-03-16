@@ -1,5 +1,5 @@
 const pool = require('../data_base/pgConnect');
-const { USER_TYPES, USER_TYPE_NUMBERS } = require('../utils/constants')
+const { USER_TYPES, USER_TYPE_NUMBERS } = require('../utils/constants');
 
 // Se importan metodos de autenticacion
 const Auth = require('../authentication/auth.js');
@@ -65,7 +65,7 @@ class UsersService {
 
   async loginUser(usbId, clave) {
     let query = `SELECT id, clave, type from usuario where id=$1`;
-    const login = await pool.query(query,[usbId]);
+    const login = await pool.query(query, [usbId]);
     const user = login.rows[0];
     if (login.rows < 1) {
       return 0;
@@ -105,7 +105,7 @@ class UsersService {
       if (userExists.rows.length == 0) {
         await this.registerUser(usbId, name, email, type, clave);
       } else if (userExists.rows[0].is_verified == true) {
-        throw 'Usuario ya se encuentra activo';
+        throw new Error('Usuario ya se encuentra activo');
       }
     } catch (err) {
       throw err;
@@ -119,17 +119,17 @@ class UsersService {
 
     query.push('SET');
 
-    Object.keys(update).forEach((key,index) => {
-      set.push(`${key} = $${index+1}`);
+    Object.keys(update).forEach((key, index) => {
+      set.push(`${key} = $${index + 1}`);
       values.push(update[key]);
     });
 
     query.push(set.join(', '));
     query.push(`WHERE id = $${Object.keys(update).length + 1}`);
     values.push(id);
-    
-    return {query: query.join(' '), values: values };
-  };
+
+    return { query: query.join(' '), values: values };
+  }
 }
 
 module.exports = UsersService;

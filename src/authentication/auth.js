@@ -19,7 +19,7 @@ class authControl {
   async createToken(id, type, expireTime) {
     try {
       const token = jwt.sign({ id: id, type: type }, tokenSecret, {
-        expiresIn: expireTime,
+        expiresIn: expireTime
       });
       return token;
     } catch (err) {
@@ -27,7 +27,7 @@ class authControl {
     }
   }
 
-  getRequestToken = (req) => {
+  getRequestToken = req => {
     const token = req.headers['x-access-token'];
     if (!token) {
       throw new Error('Falta Token');
@@ -39,11 +39,10 @@ class authControl {
     try {
       const token = this.getRequestToken(req);
       const decodedToken = jwt.verify(token, tokenSecret);
-      return decodedToken
+      return decodedToken;
     } catch (error) {
-      return { type: false }
+      return { type: false };
     }
-
   }
 
   verifySignInToken = async (req, usbId) => {
@@ -51,10 +50,10 @@ class authControl {
     try {
       const decoded = await jwt.verify(token, tokenSecret);
       if (decoded.id !== usbId) {
-        throw false;
+        throw new Error('Token no pertenece al usuario');
       }
     } catch (err) {
-      throw 'Token invalido';
+      throw new Error('Token invalido');
     }
   };
 
@@ -66,7 +65,7 @@ class authControl {
       req.userType = decoded.type;
       next();
     } catch (err) {
-      throw 'Token invalido';
+      throw new Error('Token invalido');
     }
   }
 }

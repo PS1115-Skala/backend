@@ -1,7 +1,14 @@
 const pool = require('../data_base/pgConnect');
+const { findOne } = require('../utils/helpers/pgUtils')
 
 class TrimestersService {
-  //  ********************* SERVICIOS DE TRIMESTRE  *********************
+
+  async getSpecificTrim(trimId) {
+    const query = 'SELECT * FROM trimester WHERE id = $1';
+    const values = [trimId]
+    const trim = await findOne({pool, query, values})
+    return trim;
+  }
 
   async getActualTrim() {
     const sql = 'SELECT * FROM trimester ORDER BY finish DESC LIMIT 1';
