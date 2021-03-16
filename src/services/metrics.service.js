@@ -5,7 +5,7 @@ const addDateCondition = ({ query, initDate = null, endDate }) => {
   let filteredQuery = query + ' AND send_time <= $1'
   const values = [endDate]
 
-  if (initDate) filteredQuery = ' AND send_time >= $2' && values.push(initDate);
+  if (initDate) { filteredQuery += ' AND send_time >= $2';  values.push(initDate); }
 
   return { filteredQuery, values }
 }
@@ -31,10 +31,10 @@ class MetricsService {
    */
   async getReservationsRequests(filters) {
     const today = new Date()
-    const { initDate = null, endDate = today, labFilter = null } = filters;
+    const { initDate, endDate = today, labFilter} = filters;
 
     const query = "SELECT * from reservation_request WHERE status != 'P'"
-
+    
     const { filteredQuery, values } = addDateCondition({ query, initDate, endDate });
     
     let reservationsRequests = (await pool.query(filteredQuery, values)).rows || []

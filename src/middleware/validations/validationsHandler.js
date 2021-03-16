@@ -1,17 +1,26 @@
-const Joi = require('joi');
-
 const validateData = (schema, data) => {
-    return (req, res, next) => {
-        
-        const { error } = Joi.validate(req[data], schema);
-        const valid = error == null;
+    
+    return async (req, res, next) => {
+        let schemaValidator;
 
-        if (valid) next();
-        const { details } = error;
-        const message = details.map(i => i.message).join(',');
+        typeof schema === 'function' ? schemaValidator = await schema() : schemaValidator = schema
 
-        console.log("error", message);
-        res.status(422).json({ error: message })
+        const options = {
+            abortEarly: false,
+            allowUnknown: true,
+            stripUnknown: true
+        };
+
+        const { error, value } = schemaValidator.validate(req[data], options);
+
+        if (error) {
+            const { details } = error
+
+            res.status(400).json({ validationError: details.map(x => x.message).join(', ') + ` in req.${data}` });
+        } else {
+            req[data] = value;
+            next();
+        }
     }
 }
 

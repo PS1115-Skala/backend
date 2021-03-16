@@ -18,12 +18,13 @@ const trimestersService = new TrimestersService();
 class MetricsController {
   
   async getStandardMetrics(req, res) {
+
     const { initTrim, endTrim, labFilter } = req.query
-    const { start: initDate } = trimestersService.getSpecificTrim(initTrim);
-    const { finish: endDate } = trimestersService.getSpecificTrim(endTrim);
+    const { start: initDate } = await trimestersService.getSpecificTrim(initTrim);
+    const { finish: endDate } = await trimestersService.getSpecificTrim(endTrim);
     const reservationsRequests = await metricsService.getReservationsRequests({endDate, initDate, labFilter})
     // const formatedMetrics = await metricsServices.VAINADEDAVID({peneGrande})
-    res.status(200).json(reservationsRequests)
+    res.status(200).json({reservationsRequests})
   }
 
   // GET room usages: number of students that used until now

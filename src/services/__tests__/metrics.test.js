@@ -11,7 +11,7 @@ describe('General Metrics - Success', () => {
             const actual = await metricService.getReservationsRequests(filters)
 
             expect(actual).to.be.a('array')
-            expect(actual.length).to.be.equal(1)
+            expect(actual.length).to.be.equal(9)
         })
 
         it('it should get reservations request from all labs between dates', async () => {
@@ -31,7 +31,7 @@ describe('General Metrics - Success', () => {
             const actual = await metricService.getReservationsRequests(filters)
 
             expect(actual).to.be.a('array')
-            expect(actual.length).to.be.equal(1)
+            expect(actual.length).to.be.equal(9)
         })
 
         it('it should not get reservations request from ldc lab', async () => {

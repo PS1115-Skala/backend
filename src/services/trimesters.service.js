@@ -4,9 +4,9 @@ const { findOne } = require('../utils/helpers/pgUtils')
 class TrimestersService {
 
   async getSpecificTrim(trimId) {
-    const sql = 'SELECT * FROM trimester WHERE id = $1';
+    const query = 'SELECT * FROM trimester WHERE id = $1';
     const values = [trimId]
-    const trim = await findOne({pool, sql, values})
+    const trim = await findOne({pool, query, values})
     return trim;
   }
 

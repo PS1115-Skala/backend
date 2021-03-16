@@ -1,6 +1,8 @@
 const { Router } = require('express');
 const router = Router();
 
+const { validateData } = require('../middleware/validations/validationsHandler')
+const { metricsSchema } = require('../middleware/validations/schemas/metricsSchema')
 const MetricsController = require('../controllers/metric.controller');
 const auth = require('../middleware/authHandler');
 
@@ -10,7 +12,7 @@ const metricController = new MetricsController;
 router.get('/metrics/usodesala/:RoomId', auth.isLabF, metricController.roomUsage);
 
 /* Metricas standard del usuario LabF */
-router.get('/metrics/reservas', auth.isLabF, metricController.getStandardMetrics);
+router.get('/metrics/reservas', auth.isLabF, validateData(metricsSchema, 'query'), metricController.getStandardMetrics);
 
 /* Obtener el numero de reservas que ha tenido la sala desde una fecha de inicio hasta una fecha final */
 router.get('/metrics/totalreservas', auth.isLabF, metricController.getReservationsQuantity);

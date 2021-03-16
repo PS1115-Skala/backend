@@ -530,10 +530,10 @@ insert into reservation_request(requester_id, room_id, subject_id, send_time, tr
 values ('13-11341', 'MYS-019', 'CI2691', '2020-02-02', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 43, 'P');
 -- 16
 insert into reservation_request(requester_id, room_id, subject_id, send_time, trimester_id, material_needed, quantity, status)
-values ('eduardo', 'MYS-020', 'CI2691', '2020-02-02', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 32, 'P');
+values ('eduardo', 'MYS-020', 'CI2691', '2020-02-02', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 32, 'A');
 -- 17
 insert into reservation_request(requester_id, room_id, subject_id, send_time, trimester_id, material_needed, quantity, status)
-values ('eduardo', 'MYS-020', 'CI2125', '2020-02-02', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 29, 'P');
+values ('eduardo', 'MYS-020', 'CI2125', '2020-02-02', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 29, 'A');
 -- 18
 insert into reservation_request(requester_id, room_id, subject_id, send_time, trimester_id, material_needed, quantity, status)
 values ('CI', 'MYS-018', 'CI2126', '2020-02-02', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 28, 'P');
@@ -590,25 +590,25 @@ insert into reservation_request(requester_id, room_id, subject_id, send_time, tr
 values ('13-11341', 'MYS-020', 'CI3825', '2019-02-02', 'ENE-MAR2019', 'Sillas, mesas y computadoras', 34, 'P');
 -- 36
 insert into reservation_request(requester_id, room_id, subject_id, send_time, trimester_id, material_needed, quantity, status)
-values ('13-11341', 'MYS-019', 'CI2691', '2019-02-02', 'ENE-MAR2019', 'Sillas, mesas y computadoras', 36, 'P');
+values ('13-11341', 'MYS-019', 'CI2691', '2019-02-02', 'ENE-MAR2019', 'Sillas, mesas y computadoras', 36, 'R');
 -- 37
 insert into reservation_request(requester_id, room_id, subject_id, send_time, trimester_id, material_needed, quantity, status)
-values ('eduardo', 'MYS-020', 'CI2691', '2019-02-02', 'ENE-MAR2019', 'Sillas, mesas y computadoras', 33, 'P');
+values ('eduardo', 'MYS-020', 'CI2691', '2019-02-02', 'ENE-MAR2019', 'Sillas, mesas y computadoras', 33, 'R');
 -- 38
 insert into reservation_request(requester_id, room_id, subject_id, send_time, trimester_id, material_needed, quantity, status)
-values ('eduardo', 'MYS-020', 'CI2125', '2019-02-02', 'ENE-MAR2019', 'Sillas, mesas y computadoras', 28, 'P');
+values ('eduardo', 'MYS-020', 'CI2125', '2019-02-02', 'ENE-MAR2019', 'Sillas, mesas y computadoras', 28, 'R');
 -- 39
 insert into reservation_request(requester_id, room_id, subject_id, send_time, trimester_id, material_needed, quantity, status)
-values ('CI', 'MYS-018', 'CI2126', '2019-02-02', 'ENE-MAR2019', 'Sillas, mesas y computadoras', 19, 'P');
+values ('CI', 'MYS-018', 'CI2126', '2019-02-02', 'ENE-MAR2019', 'Sillas, mesas y computadoras', 19, 'A');
 -- 40
 insert into reservation_request(requester_id, room_id, subject_id, send_time, trimester_id, material_needed, quantity, status)
-values ('CO', 'MYS-020', 'CO2111', '2019-02-02', 'ENE-MAR2019', 'Sillas, mesas y computadoras', 23, 'P');
+values ('CO', 'MYS-020', 'CO2111', '2019-02-02', 'ENE-MAR2019', 'Sillas, mesas y computadoras', 23, 'A');
 -- 41
 insert into reservation_request(requester_id, room_id, subject_id, send_time, trimester_id, material_needed, quantity, status)
-values ('CI', 'MYS-019', 'CI2692', '2019-02-02', 'ENE-MAR2019', 'Sillas, mesas y computadoras', 24, 'P');
+values ('CI', 'MYS-019', 'CI2692', '2019-02-02', 'ENE-MAR2019', 'Sillas, mesas y computadoras', 24, 'A');
 -- 42
 insert into reservation_request(requester_id, room_id, subject_id, send_time, trimester_id, material_needed, quantity, status)
-values ('CI', 'MYS-019', 'CI4835', '2019-02-02', 'ENE-MAR2019', 'Sillas, mesas y computadoras', 30, 'P');
+values ('CI', 'MYS-019', 'CI4835', '2019-02-02', 'ENE-MAR2019', 'Sillas, mesas y computadoras', 30, 'A');
 -- 43
 insert into reservation_request(requester_id, room_id, subject_id, send_time, trimester_id, material_needed, quantity, status)
 values ('15-10611', 'MYS-019', 'CI2693', '2019-11-11', 'SEP-DIC2019', 'Sillas, mesas', 10, 'P');
