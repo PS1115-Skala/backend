@@ -2,17 +2,13 @@ const { getAdminSalas } = require('./rooms.service').prototype
 const pool = require('../data_base/pgConnect');
 
 const addDateCondition = ({ queryString, initDate = null, endDate }) => {
-  let filteredQuery = queryString + ' send_time <= $1'
+  let filteredQuery = queryString + ' AND send_time <= $1'
   const values = [endDate]
 
   if (initDate) filteredQuery = ' AND send_time >= $2' && values.push(initDate);
 
   return { filteredQuery, values }
 }
-
-const hasStatusFilter = (statusFilter) => statusFilter ? true : false;
-
-const filterByStatus = ({ reservationsRequests, statusFilter }) => reservationsRequests.filter(({ status }) => status === statusFilter);
 
 const hasLabFilter = (labFilter) => labFilter ? true : false;
 
@@ -24,36 +20,26 @@ const filterByLab = async ({ reservationsRequests, labFilter }) => {
   return filteredReservationsRequest
 }
 
-const hasRoomFilter = (roomFilter) => roomFilter ? true : false;
-
-const filterByRoom = ({ reservationsRequests, roomFilter }) => reservationsRequests.filter(({ room_id }) => room_id === roomFilter);
-
 class MetricsService {
 
   /**
    * @param {Object} filters - filters options 
    * @param {Object} filters.endDate? - endDate filter
    * @param {Object} filters.initDate? - initial filter
-   * @param {Object} filters.statusFilter? - status filter: A || R || E  
    * @param {Object} filters.labFilter? - lab filter: ldac || ldac..  
-   * @param {Object} filters.roomFilter? - room filter: MYS-020 || MYS-019..  
    * @returns {Promise<Array<Object>>} reservations requests metrics
    */
   async getReservationsRequests(filters) {
     const today = new Date()
-    const { statusFilter, initDate, endDate = today, labFilter, roomFilter } = filters;
+    const { initDate = null, endDate = today, labFilter = null } = filters;
 
-    const query = 'SELECT * from reservation_request WHERE'
+    const query = "SELECT * from reservation_request WHERE status != 'E'"
 
     const { filteredQuery, values } = addDateCondition({ query, initDate, endDate });
 
     let reservationsRequests = (await pool.query(filteredQuery, values)).rows
 
-    if (hasStatusFilter(statusFilter)) reservationsRequests = filterByStatus({ reservationsRequests, statusFilter });
-
     if (hasLabFilter(labFilter)) reservationsRequests = filterByLab({ reservationsRequests, labFilter });
-
-    if (hasRoomFilter(roomFilter)) reservationsRequests = filterByRoom({ reservationsRequests, roomFilter });
 
     return reservationsRequests
   }
