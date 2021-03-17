@@ -35,11 +35,11 @@
     "joi": "^17.4.0",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.24.0",
-    "node-fetch": "^2.6.1",
     "pg": "^7.18.2",
     "set-interval-async": "1.0.30",
     "swagger-jsdoc": "^4.0.0",
-    "swagger-ui-express": "^4.1.4"
+    "swagger-ui-express": "^4.1.4",
+    "isomorphic-fetch": "^3.0.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
