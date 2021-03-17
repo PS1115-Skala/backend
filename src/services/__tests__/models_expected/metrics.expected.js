@@ -1,5 +1,5 @@
 class MetricExpected {
-    expected1 = () => ({
+    expectedHistorical = () => ({
         requestStatus: { status: [ 'Aprobados', 'Rechazados' ], request: [ 7, 3 ] },
         totalStudents: 274,
         laboratories: [
@@ -155,7 +155,7 @@ class MetricExpected {
           ]
         }
     });
-    expected2 = () => ({
+    expectedLDAC = () => ({
         requestStatus: { status: [ 'Aprobados', 'Rechazados' ], request: [ 6, 3 ] },
         totalStudents: 254,
         laboratories: [
@@ -291,6 +291,124 @@ class MetricExpected {
           ]
         }
     });
-    
+    expectedActualTrim = () => ({
+      requestStatus: { status: [ 'Aprobados', 'Rechazados' ], request: [ 3, 0 ] },
+      totalStudents: 81,
+      laboratories: [
+        {
+          labId: 'ldac',
+          labName: 'Laboratorio Docente de Aulas Computarizadas',
+          totalRequest: 2,
+          totalApproved: 2,
+          totalRejected: 0,
+          totalStudents: 61
+        },
+        {
+          labId: 'ldc',
+          labName: 'Laboratorio Docente de Computación',
+          totalRequest: 1,
+          totalApproved: 1,
+          totalRejected: 0,
+          totalStudents: 20
+        }
+      ],
+      subjects: {
+        count: 3,
+        rows: [
+          {
+            id: 'CI2691',
+            subjectName: 'Laboratorio de Algoritmos y Estructuras I',
+            totalStudents: 32,
+            totalRequests: 1
+          },
+          {
+            id: 'PS1115',
+            subjectName: 'Sistemas de Información I',
+            totalStudents: 20,
+            totalRequests: 1
+          },
+          {
+            id: 'CI2125',
+            subjectName: 'Computación I',
+            totalStudents: 29,
+            totalRequests: 1
+          }
+        ]
+      },
+      department: {
+        count: 2,
+        rows: [
+          {
+            id: 'CI',
+            deptName: 'Departamento de Computación y Tecnología de la Información',
+            totalStudents: 61,
+            totalRequests: 2
+          },
+          {
+            id: 'PS',
+            deptName: 'Departamento de Procesos y Sistemas',
+            totalStudents: 20,
+            totalRequests: 1
+          }
+        ]
+      },
+      careers: {
+        count: 7,
+        undergraduateLargeCount: 7,
+        undergraduateShortCount: 0,
+        postgraduateCount: 0,
+        rows: [
+          {
+            id: '0100',
+            type: 1,
+            career: 'Ingeniería Eléctrica',
+            totalStudents: 29,
+            totalRequests: 1
+          },
+          {
+            id: '0600',
+            type: 1,
+            career: 'Ingeniería Electrónica',
+            totalStudents: 29,
+            totalRequests: 1
+          },
+          {
+            id: '0800',
+            type: 1,
+            career: 'Ingeniería de la Computación',
+            totalStudents: 52,
+            totalRequests: 2
+          },
+          {
+            id: '1200',
+            type: 1,
+            career: 'Ingeniería Geofísica',
+            totalStudents: 29,
+            totalRequests: 1
+          },
+          {
+            id: '1700',
+            type: 1,
+            career: 'Ingeniería de Producción',
+            totalStudents: 29,
+            totalRequests: 1
+          },
+          {
+            id: '0500',
+            type: 1,
+            career: 'Licenciatura en Matemáticas',
+            totalStudents: 32,
+            totalRequests: 1
+          },
+          {
+            id: '1800',
+            type: 1,
+            career: 'Ingeniería de Telecomunicaciones',
+            totalStudents: 29,
+            totalRequests: 1
+          }
+        ]
+      }
+    });
 }
 module.exports = MetricExpected;

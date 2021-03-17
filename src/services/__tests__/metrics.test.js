@@ -56,7 +56,7 @@ describe('General Metrics - Success', () => {
             const actual = await metricService.getFormattedMetrics(reservationsRequests);
 
             expect(actual).to.be.a('object')
-            expect(actual).to.deep.equal(metricExpected.expected1())
+            expect(actual).to.deep.equal(metricExpected.expectedHistorical())
         })
 
         it('it should get all formatted reservations request from ldac lab between dates', async () => {
@@ -68,7 +68,7 @@ describe('General Metrics - Success', () => {
             const actual = await metricService.getFormattedMetrics(reservationsRequests);
 
             expect(actual).to.be.a('object')
-            expect(actual).to.deep.equal(metricExpected.expected2())
+            expect(actual).to.deep.equal(metricExpected.expectedLDAC())
         })
     })
 })

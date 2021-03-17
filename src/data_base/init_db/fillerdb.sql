@@ -93,7 +93,7 @@ insert into trimester(id, start, finish) values
 ('ABR-JUL2018', '2018-04-26', '2018-06-06');
 
 insert into trimester(id, start, finish) values
-('ENE-MAR2018', '2018-09-26', '2018-12-06');
+('ENE-MAR2018', '2018-01-26', '2018-03-26');
 
 /*Rellenamos las carreras*/
 insert into career(id, name, is_active, type) values
