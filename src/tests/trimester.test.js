@@ -3,7 +3,7 @@ const chaiHttp = require('chai-http');
 
 
 const app = require('../index');
-const { setupAdminToken, setupLabfToken } = require('../utils/helpers/setupTokens')
+const { setupAdminToken, setupLabfToken, setupStudentToken } = require('../utils/helpers/setupTokens')
 
 chai.use(chaiHttp);
 const expect = chai.expect;
@@ -11,12 +11,44 @@ const expect = chai.expect;
 
 describe('Trimester', () => {
 
-    let adminToken, labfToken;
+    let adminToken, labfToken, studentToken;
 
     before(async () => {
         labfToken = await setupLabfToken();
         adminToken = await setupAdminToken();
+        studentToken = await setupStudentToken();
     })
+
+    describe('GET /api/trimestre/todos', () => {
+        it('it should get all historical trimesters', (done) => {
+            chai.request(app)
+                .get('/api/trimestre/todos')
+                .set('x-access-token', adminToken)
+                .end((err, res) => {
+                    const lastTrim = res.body[0].id
+                    expect(res).to.have.status(200);
+                    expect(res.body).be.a('array');
+                    expect(lastTrim).to.have.equal('ENE-MAR2020');
+                    done();
+                });
+        });
+    })
+
+    describe('GET /api/trimestre/todos', () => {
+        it('it should not pass with unauthorized user', (done) => {
+            chai.request(app)
+                .get('/api/trimestre/todos')
+                .set('x-access-token', studentToken)
+                .end((err, res) => {
+                    const expected = { unauthorized: 'User need permissions' }
+                    expect(res).to.have.status(403);
+                    expect(res.body).to.deep.equal(expected);
+                    done();
+                });
+        });
+    })
+
+
 
     describe('GET /api/trimestre/ultimo', () => {
         it('it should get the actual trimester or last trimester', (done) => {

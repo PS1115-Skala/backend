@@ -10,6 +10,13 @@ class TrimestersService {
     return trim;
   }
 
+  async getExistentTrim() {
+    const query = 'SELECT * FROM trimester ORDER BY start DESC';
+    const trim = (await pool.query(query)).rows;
+    return trim;
+  }
+
+
   async getActualTrim() {
     const sql = 'SELECT * FROM trimester ORDER BY finish DESC LIMIT 1';
     const trim = await pool.query(sql);
