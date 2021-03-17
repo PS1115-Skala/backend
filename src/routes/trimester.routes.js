@@ -12,6 +12,9 @@ const trimesterController = new TrimesterController();
 /* [TESTED] GET actual trimester */
 router.get('/trimestre/ultimo', auth.isLogged, trimesterController.getLastTrimester);
 
+/* [TESTED] GET todo los trimestres existentes */
+router.get('/trimestre/todos', auth.isAdminLogged, trimesterController.getAllTrimesters);
+
 /* [TESTED] PUT update actual trimester  */
 router.put('/trimestre/:Id', auth.isLabF, trimesterController.updateTrimester);
 
