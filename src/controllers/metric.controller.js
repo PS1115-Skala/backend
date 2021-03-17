@@ -21,9 +21,12 @@ class MetricsController {
     const { initTrim, endTrim, labFilter } = req.query
     const { start: initDate } = await trimestersService.getSpecificTrim(initTrim);
     const { finish: endDate } = await trimestersService.getSpecificTrim(endTrim);
-    const reservationsRequests = await metricsService.getReservationsRequests({endDate, initDate, labFilter})
-    // const formatedMetrics = await metricsServices.VAINADEDAVID({peneGrande})
-    res.status(200).json({reservationsRequests})
+    const reservationsRequests = await metricsService.getReservationsRequests({endDate, initDate, labFilter});
+    if (reservationsRequests.length){
+      const formattedMetrics = await metricsService.getFormattedMetrics(reservationsRequests);
+      return res.status(200).json(formattedMetrics);
+    }
+    return res.status(204).end();
   }
 
   // GET room usages: number of students that used until now
