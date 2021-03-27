@@ -27,6 +27,9 @@ router.get('/special', auth.isAdminLogged, specialResController.allSpecialReserv
 /* Obtener una reserva especial por su id */
 router.get('/special/:id', auth.isAdminLogged, specialResController.specialReservationsById);
 
+/* Obtener todas las reserva especial por un user */
+router.get('/special/user/:user', auth.isLogged, specialResController.specialReservationsByUser);
+
 /* Crear una reserva especial asociada a un usuario */
 router.post('/special/create/:userId', auth.isLogged, specialResController.createSpecialReservation);
 

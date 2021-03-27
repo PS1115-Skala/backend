@@ -36,6 +36,13 @@ class SpecialReservationsService{
         return specialR;
     }
 
+    async getByUser(user){
+        const query = `SELECT id, requester_id, laboratory, contact_name, reservation_day 
+        FROM special_reservations WHERE requester_id = $1 ORDER BY reservation_day DESC`;
+        const specialR = await pool.query(query, [user]);
+        return specialR;
+    }
+
     async create(user,lab,name,email,day,hour,quantity,observations){
         const actualTrimId = await trimestersService.getActualTrim();
         const actualTrim = actualTrimId.rows[0].id;
