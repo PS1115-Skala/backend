@@ -1,6 +1,7 @@
 const { expect } = require('chai')
 const MetricService = require('../metrics.service');
 const MetricExpected = require('./models_expected/metrics.expected');
+//const util = require('util');
 
 describe('General Metrics - Success', () => {
 
@@ -55,6 +56,8 @@ describe('General Metrics - Success', () => {
             const reservationsRequests = await metricService.getReservationsRequests(filters);
             const actual = await metricService.getFormattedMetrics(reservationsRequests);
 
+            //console.log(util.inspect(actual, {showHidden: false, depth: null}));
+
             expect(actual).to.be.a('object')
             expect(actual).to.deep.equal(metricExpected.expectedHistorical())
         })
@@ -66,6 +69,8 @@ describe('General Metrics - Success', () => {
 
             const reservationsRequests = await metricService.getReservationsRequests(filters);
             const actual = await metricService.getFormattedMetrics(reservationsRequests);
+
+            //console.log(util.inspect(actual, {showHidden: false, depth: null}));
 
             expect(actual).to.be.a('object')
             expect(actual).to.deep.equal(metricExpected.expectedLDAC())
