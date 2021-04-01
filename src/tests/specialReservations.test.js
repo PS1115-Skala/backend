@@ -319,7 +319,7 @@ describe('Special Reservations', () => {
                 .delete('/api/special/78')
                 .set('x-access-token', adminToken)
                 .end((err, res) => {
-                    expect(res).to.have.status(400);
+                    expect(res).to.have.status(404);
                     done();
                 });
         });
