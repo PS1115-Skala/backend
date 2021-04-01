@@ -43,7 +43,7 @@ describe('Reservations requests', () => {
                 .get('/api/solicitudes/1/horario')
                 .set('x-access-token', studentToken)
                 .end((err, res) => {
-                    const schedule = res.body.shedule
+                    const schedule = res.body.schedule
                     expect(res).to.have.status(200)
                     expect(res.body).be.a('object');
                     expect(schedule.length).be.eql(12);
@@ -51,6 +51,25 @@ describe('Reservations requests', () => {
                     expect(schedule[0].day).to.have.equal('Lunes');
                     expect(schedule[0].hour).to.have.equal(1);
                     expect(schedule[0].week).to.have.equal(2);
+                    done();
+                });
+        });
+    });
+
+    describe('GET /api/solicitudes/16/horario', () => {
+        it('it should get the shedule of reservation request 16', (done) => {
+            chai.request(app)
+                .get('/api/solicitudes/16/horario')
+                .set('x-access-token', adminToken)
+                .end((err, res) => {
+                    const schedule = res.body.schedule
+                    expect(res).to.have.status(200)
+                    expect(res.body).be.a('object');
+                    expect(schedule.length).be.eql(6);
+                    expect(res.body.typeWeek).to.have.equal('impares');
+                    expect(schedule[0].day).to.have.equal('Jueves');
+                    expect(schedule[0].hour).to.have.equal(11);
+                    expect(schedule[0].week).to.have.equal(1);
                     done();
                 });
         });
