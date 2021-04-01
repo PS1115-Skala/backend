@@ -14,7 +14,7 @@ class SpecialReservationsController{
 
       if (specialReservations.rows.length){
         return res.status(200).send(specialReservations.rows);
-      } else{
+      } else {
         return res.status(200).send([]);
       }
     } catch (error) {
@@ -29,8 +29,8 @@ class SpecialReservationsController{
 
       if (specialReservation.rows.length){
         return res.status(200).send(specialReservation.rows[0]);
-      } else{
-        return res.status(404).send({ error: 'ID incorrecto' });
+      } else {
+        return res.status(404).send({ error: 'ID no encontrado' });
       }
     } catch (error) {
         res.status(500).json({ error: 'Hubo un error en servidor'});
@@ -43,7 +43,7 @@ class SpecialReservationsController{
       const specialReservation = await specialResService.getByUser(user);
       if (specialReservation.rows.length){
         return res.status(200).send(specialReservation.rows);
-      } else{
+      } else {
         return res.status(204).send({ message: 'No hay solicitudes de reserva' });
       }
     } catch (error) {
@@ -75,8 +75,8 @@ class SpecialReservationsController{
         }).catch((err) => {
           throw err
         });
-      } else{
-        return res.status(400).json({ error: 'ID no existe' });
+      } else {
+        return res.status(404).json({ error: 'ID no encontrado' });
       }
     } catch (error) {
         return res.status(500).json({ error: 'Error en servidor' });
