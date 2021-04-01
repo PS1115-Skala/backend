@@ -44,16 +44,16 @@ class ReservationRequestController {
   }
 
   // GET schedule of reservation request
-  async getReservationReqSchedule(req, res, next) {
+  async getReservationReqSchedule(req, res) {
     const solicitudId = req.params.solicitudId;
     try {
       const schedule = await reservationRequestService.getScheduleFromRequest(
         solicitudId
       );
-      res.json(schedule);
+      if (schedule.typeWeek != "-1") return res.status(200).json(schedule);
+      return res.status(204).end();
     } catch (err) {
-      res.status(500).json({ error: 'Ocurrio un error en el servidor' });
-      next(err);
+      return res.status(500).json({ error: 'Ocurrio un error en el servidor' });
     }
   }
 
