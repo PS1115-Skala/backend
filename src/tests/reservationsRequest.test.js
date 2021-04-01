@@ -38,13 +38,13 @@ describe('Reservations requests', () => {
     });
 
     describe('GET /api/solicitudes/1/horario', () => {
-        it('it should get the shedule of reservation request 1', (done) => {
+        it('it should get the schedule of reservation request 1', (done) => {
             chai.request(app)
                 .get('/api/solicitudes/1/horario')
                 .set('x-access-token', studentToken)
                 .end((err, res) => {
-                    const schedule = res.body.schedule
-                    expect(res).to.have.status(200)
+                    const schedule = res.body.schedule;
+                    expect(res).to.have.status(200);
                     expect(res.body).be.a('object');
                     expect(schedule.length).be.eql(12);
                     expect(res.body.typeWeek).to.have.equal('pares');
@@ -57,19 +57,31 @@ describe('Reservations requests', () => {
     });
 
     describe('GET /api/solicitudes/16/horario', () => {
-        it('it should get the shedule of reservation request 16', (done) => {
+        it('it should get the schedule of reservation request 16', (done) => {
             chai.request(app)
                 .get('/api/solicitudes/16/horario')
                 .set('x-access-token', adminToken)
                 .end((err, res) => {
-                    const schedule = res.body.schedule
-                    expect(res).to.have.status(200)
+                    const schedule = res.body.schedule;
+                    expect(res).to.have.status(200);
                     expect(res.body).be.a('object');
                     expect(schedule.length).be.eql(6);
                     expect(res.body.typeWeek).to.have.equal('impares');
                     expect(schedule[0].day).to.have.equal('Jueves');
                     expect(schedule[0].hour).to.have.equal(11);
                     expect(schedule[0].week).to.have.equal(1);
+                    done();
+                });
+        });
+    });
+
+    describe('GET /api/solicitudes/17/horario', () => {
+        it('it should get empty schedule of reservation request 17', (done) => {
+            chai.request(app)
+                .get('/api/solicitudes/17/horario')
+                .set('x-access-token', adminToken)
+                .end((err, res) => {
+                    expect(res).to.have.status(204);
                     done();
                 });
         });
