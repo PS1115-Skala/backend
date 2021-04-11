@@ -259,6 +259,45 @@ describe('Special Reservations', () => {
     })
 
     /*
+     * Test the /GET about special reservations by user
+     */
+    describe('GET /api/special/user/<username>', () => {
+        it('it should get all special reservation by user 15-10123', (done) => {
+            const user = '15-10123';
+            chai.request(app)
+                .get(`/api/special/user/${user}`)
+                .set('x-access-token', studentToken)
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body).be.a('array');
+                    expect(res.body.length).be.eql(1);
+                    done();
+                });
+        });
+
+        it('it should get any by user labf', (done) => {
+            const user = 'labf';
+            chai.request(app)
+                .get(`/api/special/user/${user}`)
+                .set('x-access-token', labfToken)
+                .end((err, res) => {
+                    expect(res).to.have.status(204);
+                    done();
+                });
+        });
+
+        it('it should get an error because request is unauthorized', (done) => {
+            const user = '15-10123';
+            chai.request(app)
+                .get(`/api/special/user/${user}`)
+                .end((err, res) => {
+                    expect(res).to.have.status(403);
+                    done();
+                });
+        });
+    })
+
+    /*
      * Test the DELETE about special reservations
      */
 
@@ -280,7 +319,7 @@ describe('Special Reservations', () => {
                 .delete('/api/special/78')
                 .set('x-access-token', adminToken)
                 .end((err, res) => {
-                    expect(res).to.have.status(400);
+                    expect(res).to.have.status(404);
                     done();
                 });
         });

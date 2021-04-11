@@ -6,7 +6,7 @@ const specialResService = new SpecialReservationsService();
 */
 
 class SpecialReservationsController{
-  allSpecialReservations = async(req, res, next) => {
+  allSpecialReservations = async(req, res) => {
     try {
       const lab = req.query.lab || 'all';
       const trim = req.query.trim || 'all';
@@ -14,7 +14,7 @@ class SpecialReservationsController{
 
       if (specialReservations.rows.length){
         return res.status(200).send(specialReservations.rows);
-      } else{
+      } else {
         return res.status(200).send([]);
       }
     } catch (error) {
@@ -22,22 +22,36 @@ class SpecialReservationsController{
     }
   }
 
-  specialReservationsById = async(req, res, next) => {
+  specialReservationsById = async(req, res) => {
     try {
       const id = req.params.id;
       const specialReservation = await specialResService.getById(id);
 
       if (specialReservation.rows.length){
         return res.status(200).send(specialReservation.rows[0]);
-      } else{
-        return res.status(400).send({ error: 'ID incorrecto' });
+      } else {
+        return res.status(404).send({ error: 'ID no encontrado' });
       }
     } catch (error) {
         res.status(500).json({ error: 'Hubo un error en servidor'});
     }
   }
 
-  createSpecialReservation = async(req, res, next) => {
+  specialReservationsByUser = async(req,res) => {
+    try {
+      const user = req.params.user;
+      const specialReservation = await specialResService.getByUser(user);
+      if (specialReservation.rows.length){
+        return res.status(200).send(specialReservation.rows);
+      } else {
+        return res.status(204).send({ message: 'No hay solicitudes de reserva' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: 'Hubo un error en servidor'});
+    }
+  }
+
+  createSpecialReservation = async(req, res) => {
     try {
       const userId = req.params.userId;
       const { laboratory, contact_name, contact_email, reservation_day, reservation_hour, amount_people, observations } = req.body;
@@ -51,7 +65,7 @@ class SpecialReservationsController{
     }
   }
 
-  deleteSpecialReservation = async(req, res, next) => {
+  deleteSpecialReservation = async(req, res) => {
     try {
       const id = req.params.id;
       const find = await specialResService.getById(id);
@@ -61,8 +75,8 @@ class SpecialReservationsController{
         }).catch((err) => {
           throw err
         });
-      } else{
-        return res.status(400).json({ error: 'ID no existe' });
+      } else {
+        return res.status(404).json({ error: 'ID no encontrado' });
       }
     } catch (error) {
         return res.status(500).json({ error: 'Error en servidor' });
