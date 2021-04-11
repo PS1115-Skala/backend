@@ -1,7 +1,6 @@
 const { expect } = require('chai')
 const MetricService = require('../metrics.service');
 const MetricExpected = require('./models_expected/metrics.expected');
-//const util = require('util');
 
 describe('General Metrics - Success', () => {
 

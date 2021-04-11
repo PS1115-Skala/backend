@@ -2,18 +2,19 @@
 const { expect } = require('chai')
 const fs = require('fs')
 const path = require('path')
+
 const removeCsv = require('../deleteCsv')
 const writeCsv = require('../writeCsv')
 
-const filePathMetricsReportTest = path.join(__dirname, '../csvFiles/summaryMetricsTest')
+const filePath = path.join(__dirname, '../csvFiles/summaryMetricsTest')
 
 describe('handler csv file operations - Success', () => {
     it('it should create csv file', async () => {
         const csvString = 'Solicitudes Aprobadas,Solicitudes Rechazadas,Estudiantes atendidos,Materias atendidas,Departamentos Atendidos,Carreras atendidas\n7,3,274,7,3,8\n'
 
-        await writeCsv(filePathMetricsReportTest)(csvString)
+        await writeCsv(filePath)(csvString)
 
-        fs.access(`${filePathMetricsReportTest}.csv`, fs.F_OK, (err) => {
+        fs.access(`${filePath}.csv`, fs.F_OK, (err) => {
             if (err) {
                 expect.fail('csv file path does not exists')
             }
@@ -22,7 +23,7 @@ describe('handler csv file operations - Success', () => {
 
     it('it should delete csv file', async () => {
         try {
-            await removeCsv(`${filePathMetricsReportTest}.csv`)
+            await removeCsv(`${filePath}.csv`)
         } catch (error) {
             expect.fail('', '',`no se pudo eliminar el archivo: ${error}`)
         }

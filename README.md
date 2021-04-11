@@ -19,6 +19,7 @@ Requisitos para ejecutar (No Docker):
 ---------
 
 - Postgresql
+- zip command
 - Nodejs (>=11.x <14.x)
 
 #
