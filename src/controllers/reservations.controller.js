@@ -83,7 +83,7 @@ class ReservationController {
     const { room, semanas } = req.body.shift()
     const schedules = req.body
     try {
-      if (!schedules.length) res.status(403).json({ error: 'Debe llenar un horario a solicitar reserva' });
+      if (!schedules.length) res.status(400).json({ error: 'Debe llenar un horario a solicitar reserva' });
       if (semanas == 'todas') {
         for (let semana = 1; semana < 13; semana++) {
           await reservationService.deleteScheduleFromAdmin(
@@ -115,7 +115,7 @@ class ReservationController {
           room
         );
       } else {
-        res.status(403).json({
+        res.status(400).json({
           error: 'No se esta especificando un tipo de semana correctamente'
         });
       }
@@ -140,7 +140,7 @@ class ReservationController {
     try {
       if (!req.body[1]) {
         res
-          .status(403)
+          .status(400)
           .json({ error: 'Debe llenar un horario a solicitar reserva' });
       } else {
         // creamos la solicitud de reserva, tomamos el id, verificamos el tipo de semana y crean los horarios de esa solicitud
@@ -182,7 +182,7 @@ class ReservationController {
             idCreatedRequest
           );
         } else {
-          res.status(403).json({
+          res.status(400).json({
             error: 'No se esta especificando un tipo de semana correctamente'
           });
         }
@@ -197,7 +197,7 @@ class ReservationController {
           idCreatedRequest
         );
         if (checkSchedule.rowCount > 0) {
-          res.status(403).json({
+          res.status(400).json({
             error: `Ya existe una reserva en la sala ${room} con ese horario, Elimine la(s) Reservas en ese horario antes de aceptar esta solicitud (Comunicate con los administradores del ldac)`
           });
           return;

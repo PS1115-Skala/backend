@@ -34,7 +34,7 @@ class MetricsController {
     const room_id = req.params.RoomId;
     const fechaInicio = req.body.fechaInicio;
     if (fechaInicio == undefined) {
-      res.status(403).json({ error: `No se ha introducido ninguna fecha` });
+      res.status(400).json({ error: `No se ha introducido ninguna fecha` });
       return;
     }
     try {
@@ -87,7 +87,7 @@ class MetricsController {
         .status(200)
         .send(`Existen un total de ${result} reservas en el sistema`);
     } else {
-      res.status(403).json({ error: `El filtro seleccionado no es valido` });
+      res.status(400).json({ error: `El filtro seleccionado no es valido` });
     }
   }
 
@@ -97,7 +97,7 @@ class MetricsController {
     const trimestreInicio = req.body.trimestreInicio;
     const trimestreFinal = req.body.trimestreFinal;
     if (trimestreInicio == undefined || trimestreFinal == undefined) {
-      res.status(403).json({
+      res.status(400).json({
         error: `No se ha introducido el trimestre inicio o trimestre final`
       });
       return;

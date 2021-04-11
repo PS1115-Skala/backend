@@ -133,7 +133,7 @@ class TrimesterController {
         finish
       );
       if (!response) {
-        res.status(403).json({ message: 'Fecha Invalida' });
+        res.status(400).json({ message: 'Fecha Invalida' });
       } else {
         res.status(200).json({ message: 'Trimestre actualizado' });
       }
