@@ -1,0 +1,1 @@
+Carpeta exclusiva para los 4 csv generados del reporte de metricas
