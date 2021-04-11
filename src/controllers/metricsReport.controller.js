@@ -64,8 +64,6 @@ class MetricsController {
 
             await compressFiles(filePath)
                 .then(downloadFile(res))
-
-            // return res.download(filePathLabsReport)
         }
         return res.status(204).end();
     }
