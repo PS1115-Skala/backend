@@ -35,36 +35,6 @@ const historicalMetricsJson = {
                 subjectName: 'Laboratorio de Algoritmos y Estructuras II',
                 totalStudents: 24,
                 totalRequests: 1
-            },
-            {
-                id: 'PS1115',
-                subjectName: 'Sistemas de Información I',
-                totalStudents: 20,
-                totalRequests: 1
-            },
-            {
-                id: 'CI4835',
-                subjectName: 'Redes de Computadoras I',
-                totalStudents: 30,
-                totalRequests: 1
-            },
-            {
-                id: 'CI2125',
-                subjectName: 'Computación I',
-                totalStudents: 57,
-                totalRequests: 2
-            },
-            {
-                id: 'CI2126',
-                subjectName: 'Computación II',
-                totalStudents: 19,
-                totalRequests: 1
-            },
-            {
-                id: 'CO2111',
-                subjectName: 'Cómputo Científico I',
-                totalStudents: 23,
-                totalRequests: 1
             }
         ]
     },
@@ -93,65 +63,86 @@ const historicalMetricsJson = {
     },
     careers: {
         count: 8,
-        undergraduateLargeCount: 8,
-        undergraduateShortCount: 0,
-        postgraduateCount: 0,
+        undergraduateLarge: {
+            count: 8,
+            totalStudents: 421,
+            totalApproved: 16,
+            totalRejected: 9
+        },
+        undergraduateShort: { count: 0, totalStudents: 0, totalApproved: 0, totalRejected: 0 },
+        postgraduate: { count: 0, totalStudents: 0, totalApproved: 0, totalRejected: 0 },
         rows: [
             {
                 id: '0100',
                 type: 1,
                 career: 'Ingeniería Eléctrica',
-                totalStudents: 57,
-                totalRequests: 2
+                totalStudents: 29,
+                totalRequests: 2,
+                totalApproved: 1,
+                totalRejected: 1
             },
             {
                 id: '0300',
                 type: 1,
                 career: 'Ingeniería Química',
                 totalStudents: 23,
-                totalRequests: 1
+                totalRequests: 1,
+                totalApproved: 1,
+                totalRejected: 0
             },
             {
                 id: '0600',
                 type: 1,
                 career: 'Ingeniería Electrónica',
-                totalStudents: 76,
-                totalRequests: 3
+                totalStudents: 48,
+                totalRequests: 3,
+                totalApproved: 2,
+                totalRejected: 1
             },
             {
                 id: '0800',
                 type: 1,
                 career: 'Ingeniería de la Computación',
-                totalStudents: 175,
-                totalRequests: 6
+                totalStudents: 106,
+                totalRequests: 6,
+                totalApproved: 4,
+                totalRejected: 2
             },
             {
                 id: '1200',
                 type: 1,
                 career: 'Ingeniería Geofísica',
-                totalStudents: 57,
-                totalRequests: 2
+                totalStudents: 29,
+                totalRequests: 2,
+                totalApproved: 1,
+                totalRejected: 1
             },
             {
                 id: '1700',
                 type: 1,
                 career: 'Ingeniería de Producción',
-                totalStudents: 57,
-                totalRequests: 2
+                totalStudents: 29,
+                totalRequests: 2,
+                totalApproved: 1,
+                totalRejected: 1
             },
             {
                 id: '0500',
                 type: 1,
                 career: 'Licenciatura en Matemáticas',
-                totalStudents: 148,
-                totalRequests: 5
+                totalStudents: 79,
+                totalRequests: 5,
+                totalApproved: 3,
+                totalRejected: 2
             },
             {
                 id: '1800',
                 type: 1,
                 career: 'Ingeniería de Telecomunicaciones',
-                totalStudents: 106,
-                totalRequests: 4
+                totalStudents: 78,
+                totalRequests: 4,
+                totalApproved: 3,
+                totalRejected: 1
             }
         ]
     }

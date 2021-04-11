@@ -1,5 +1,7 @@
 'use strict'
 
+const csvFormater = require('./util/csvFormater')
+
 const getRequests = ({ request = [0,0] }) => ({ aprobados: request[0], rechazados: request[1] } || { aprobados: 0, rechazados: 0 })
 
 const getSubjectsQuantity = ({ count = 0 }) => ({ subjectsQuantity: count })
@@ -17,12 +19,10 @@ const headers = [
   'Carreras atendidas'
 ]
 
-const getValues = ({ aprobados, rechazados, totalStudents, subjectsQuantity, deparmentQuantitys, careersQuantitys }) =>
+const formatValues = ({ aprobados, rechazados, totalStudents, subjectsQuantity, deparmentQuantitys, careersQuantitys }) =>
   ([`${aprobados}`, `${rechazados}`, `${totalStudents}`, `${subjectsQuantity}`, `${deparmentQuantitys}`, `${careersQuantitys}`])
 
-const csvFormater = (arrayData) => (arrayData.join() + '\n')
-
-const convertGeneralMetrics = async (jsonMetrics) => {
+const convertSummaryMetrics = async (jsonMetrics) => {
   const { requestStatus, totalStudents, subjects, department, careers } = jsonMetrics;
   const { aprobados, rechazados } = getRequests(requestStatus)
   const { subjectsQuantity } = getSubjectsQuantity(subjects)
@@ -30,11 +30,11 @@ const convertGeneralMetrics = async (jsonMetrics) => {
   const { careersQuantitys } = getCareersQuantity(careers)
 
   let csvString = '';
-  const values = getValues({ aprobados, rechazados, totalStudents, subjectsQuantity, deparmentQuantitys, careersQuantitys })
+  const values = formatValues({ aprobados, rechazados, totalStudents, subjectsQuantity, deparmentQuantitys, careersQuantitys })
 
   csvString = csvFormater(headers) + csvFormater(values)
 
   return csvString
 }
 
-module.exports = { convertGeneralMetrics }
+module.exports = { convertSummaryMetrics }

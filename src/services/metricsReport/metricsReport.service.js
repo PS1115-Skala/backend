@@ -1,14 +1,16 @@
 'use strict'
 
 const path = require('path')
+
 const writeCSV = require('./writeCsv')
-const { convertGeneralMetrics } = require('./toCsv')
+const { convertSummaryMetrics } = require('./summaryCsv')
+const { labsMetrics } = require('./labsMetrics')
 
 const filePathMetricsReport = path.join(__dirname, './csvFiles/summaryMetrics')
 
 const getSummaryReport = async (jsonMetrics) => {
     try {
-        const formatedCSV = await convertGeneralMetrics(jsonMetrics);
+        const formatedCSV = await convertSummaryMetrics(jsonMetrics);
         await writeCSV(filePathMetricsReport)(formatedCSV)
         return true
     } catch (error) {
@@ -16,4 +18,14 @@ const getSummaryReport = async (jsonMetrics) => {
     }
 }
 
-module.exports = { getSummaryReport }
+const getLabsReport = async (jsonMetrics) => {
+    try {
+        const formatedCSV = await labsMetrics(jsonMetrics);
+        await writeCSV(filePathMetricsReport)(formatedCSV)
+        return true
+    } catch (error) {
+        return false
+    }
+}
+
+module.exports = { getSummaryReport, getLabsReport }
