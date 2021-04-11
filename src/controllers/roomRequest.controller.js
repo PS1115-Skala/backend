@@ -48,7 +48,7 @@ class RoomRequestController {
     const result = await roomRequestService.updateRoomRequest(id, status);
     let date = moment().format('YYYY-MM-DD');
     if (!result) {
-      res.status(403).json({
+      res.status(400).json({
         error: `La sala ya ha sido asignada previamente a un laboratorio y se encuentra activa`
       });
     } else {
@@ -79,11 +79,11 @@ class RoomRequestController {
       date
     );
     if (result == null) {
-      res.status(403).json({
+      res.status(400).json({
         error: `El usuario no esta autorizado a reservar salas o no se ha introducido el id de la sala`
       });
     } else if (room_id.length > 7) {
-      res.status(403).json({ error: `El nombre a solicitar es incorrecto` });
+      res.status(400).json({ error: `El nombre a solicitar es incorrecto` });
     } else {
       try {
         res.status(201).json({

@@ -141,9 +141,9 @@ class SalaController {
       if (change == 1) {
         res.status(200).json({ message: 'Sala Actualizada' });
       } else if (change == 0) {
-        res.status(403).json({ error: 'Update Invalido' });
+        res.status(400).json({ error: 'Update Invalido' });
       } else if (change == -1) {
-        res.status(403).json({ error: 'Hay reservas asignadas a esta sala' });
+        res.status(400).json({ error: 'Hay reservas asignadas a esta sala' });
       }
     } catch (err) {
       res
