@@ -3,7 +3,7 @@
 const path = require('path')
 
 const writeCSV = require('./writeCsv')
-const { convertSummaryMetrics } = require('./summaryCsv')
+const { convertSummaryMetrics } = require('./summaryMetrics')
 const { labsMetrics } = require('./labsMetrics')
 const { subjectsMetrics } = require('./subjectsMetrics')
 const { careersMetrics } = require('./careersMetrics')

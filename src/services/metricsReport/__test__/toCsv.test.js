@@ -3,7 +3,7 @@ const { expect } = require('chai')
 
 const { historicalMetricsJson } = require('./helpers/models/toCsv')
 
-const { convertSummaryMetrics } = require('../summaryCsv')
+const { convertSummaryMetrics } = require('../summaryMetrics')
 const { labsMetrics } = require('../labsMetrics')
 const { subjectsMetrics } = require('../subjectsMetrics')
 const { careersMetrics } = require('../careersMetrics')
@@ -12,7 +12,7 @@ describe('convert summary metrics data json into CSV string - Success', () => {
     it('it should convert json into csv file', async () => {
         const actualFormatedCSV = await convertSummaryMetrics(historicalMetricsJson);
 
-        const expected = 'Solicitudes Aprobadas,Solicitudes Rechazadas,Estudiantes atendidos,Materias atendidas,Departamentos Atendidos,Carreras atendidas\n7,3,274,7,3,8\n'
+        const expected = 'Solicitudes Aprobadas,Solicitudes Rechazadas,Estudiantes atendidos,Materias atendidas,Departamentos Atendidos,Carreras atendidas,Estudiantes de carreras largas atentidos,Estudiantes de carreras cortas atentidos,Estudiantes de postgrado atentidos\n7,3,274,7,3,8,421,0,0\n'
 
         expect(actualFormatedCSV).to.deep.equal(expected)
     })
