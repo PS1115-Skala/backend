@@ -8,12 +8,15 @@ const { labsMetrics } = require('./labsMetrics')
 const { subjectsMetrics } = require('./subjectsMetrics')
 const { careersMetrics } = require('./careersMetrics')
 
-const filePathMetricsReport = path.join(__dirname, './csvFiles/summaryMetrics')
+const filePathSummaryReport = path.join(__dirname, './csvFiles/summaryMetrics')
+const filePathLabsReport = path.join(__dirname, './csvFiles/labsMetrics')
+const filePathCareersReport = path.join(__dirname, './csvFiles/careersMetrics')
+const filePathSubjectsReport = path.join(__dirname, './csvFiles/subjectsMetrics')
 
 const getSummaryReport = async (jsonMetrics) => {
     try {
         const formatedCSV = await convertSummaryMetrics(jsonMetrics);
-        await writeCSV(filePathMetricsReport)(formatedCSV)
+        await writeCSV(filePathSummaryReport)(formatedCSV)
         return true
     } catch (error) {
         return false
@@ -23,7 +26,7 @@ const getSummaryReport = async (jsonMetrics) => {
 const getLabsReport = async (jsonMetrics) => {
     try {
         const formatedCSV = await labsMetrics(jsonMetrics);
-        await writeCSV(filePathMetricsReport)(formatedCSV)
+        await writeCSV(filePathLabsReport)(formatedCSV)
         return true
     } catch (error) {
         return false
@@ -33,7 +36,7 @@ const getLabsReport = async (jsonMetrics) => {
 const getSubjectsReport = async (jsonMetrics) => {
     try {
         const formatedCSV = await subjectsMetrics(jsonMetrics);
-        await writeCSV(filePathMetricsReport)(formatedCSV)
+        await writeCSV(filePathCareersReport)(formatedCSV)
         return true
     } catch (error) {
         return false
@@ -43,7 +46,7 @@ const getSubjectsReport = async (jsonMetrics) => {
 const getCareersReport = async (jsonMetrics) => {
     try {
         const formatedCSV = await careersMetrics(jsonMetrics);
-        await writeCSV(filePathMetricsReport)(formatedCSV)
+        await writeCSV(filePathSubjectsReport)(formatedCSV)
         return true
     } catch (error) {
         return false
