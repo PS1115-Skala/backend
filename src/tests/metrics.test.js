@@ -3,6 +3,7 @@ let chai = require('chai');
 let chaiHttp = require('chai-http');
 let app = require('../index');
 let expect = chai.expect;
+//const util = require('util');
 
 chai.use(chaiHttp);
 
@@ -32,6 +33,7 @@ describe('Metrics', () => {
                 .get('/api/metrics/reservas')
                 .set('x-access-token', labfToken)
                 .end((err, res) => {
+                    //console.log(util.inspect(res.body, {showHidden: false, depth: null}));
                     expect(res).to.have.status(200);
                     expect(res.body).be.a('object');
                     expect(res.body).to.deep.equal(metricExpected.expectedActualTrim());
