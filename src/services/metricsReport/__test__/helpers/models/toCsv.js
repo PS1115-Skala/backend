@@ -90,60 +90,6 @@ const historicalMetricsJson = {
                 totalApproved: 1,
                 totalRejected: 0
             },
-            {
-                id: '0600',
-                type: 1,
-                career: 'Ingeniería Electrónica',
-                totalStudents: 48,
-                totalRequests: 3,
-                totalApproved: 2,
-                totalRejected: 1
-            },
-            {
-                id: '0800',
-                type: 1,
-                career: 'Ingeniería de la Computación',
-                totalStudents: 106,
-                totalRequests: 6,
-                totalApproved: 4,
-                totalRejected: 2
-            },
-            {
-                id: '1200',
-                type: 1,
-                career: 'Ingeniería Geofísica',
-                totalStudents: 29,
-                totalRequests: 2,
-                totalApproved: 1,
-                totalRejected: 1
-            },
-            {
-                id: '1700',
-                type: 1,
-                career: 'Ingeniería de Producción',
-                totalStudents: 29,
-                totalRequests: 2,
-                totalApproved: 1,
-                totalRejected: 1
-            },
-            {
-                id: '0500',
-                type: 1,
-                career: 'Licenciatura en Matemáticas',
-                totalStudents: 79,
-                totalRequests: 5,
-                totalApproved: 3,
-                totalRejected: 2
-            },
-            {
-                id: '1800',
-                type: 1,
-                career: 'Ingeniería de Telecomunicaciones',
-                totalStudents: 78,
-                totalRequests: 4,
-                totalApproved: 3,
-                totalRejected: 1
-            }
         ]
     }
 }
