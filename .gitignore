@@ -181,7 +181,8 @@ $RECYCLE.BIN/
 .devcontainer
 
 # Temporary csv files
-src/services/metricsReport/csvFiles/
-
+# src/services/metricsReport/csvFiles/*
+*.csv
+*.zip
 
 # End of https://www.gitignore.io/api/node,linux,macos,windows
