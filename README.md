@@ -44,12 +44,12 @@ $ sudo -u postgres psql -c "DROP DATABASE reserva"
 
 - Crear la estructura y tablas
 ```
-$ sudo -u postgres psql -d reserva -f data_base/init_db/createdb.sql
+$ sudo -u postgres psql -d reserva -f src/data_base/init_db/createdb.sql
 ```
 
 - (Opcional) Llenar la BD con datos de prueba
 ```
-$ sudo -u postgres psql -d reserva -f data_base/init_db/createdb.sql
+$ sudo -u postgres psql -d reserva -f src/data_base/init_db/fillerdb.sql
 ```
 
 - Ejecutar el backend:
