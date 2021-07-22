@@ -35,13 +35,33 @@ CREATE TABLE IF NOT EXISTS subject(
     FOREIGN KEY (dept) REFERENCES dept(id)
 );
 
+-- Solo los labs pueden agregar mas carreras
+-- El front tiene que permitirte crear el carreras mediante un modal
+CREATE TABLE IF NOT EXISTS career(
+    id VARCHAR(4) PRIMARY KEY,
+    name VARCHAR(128),
+    is_active BOOLEAN NOT NULL,
+    type SMALLINT -- 0 = Cortas, 1 = Largas, 3 = Postgrado
+);
+
+-- Solo los labs pueden agregar mas carreras
+-- El front tiene que permitirte crear el carreras mediante un modal
+CREATE TABLE IF NOT EXISTS career_subject(
+    id BIGSERIAL PRIMARY KEY,
+    career VARCHAR(4) NOT NULL,
+    subject VARCHAR(6) NOT NULL,
+    FOREIGN KEY (career) REFERENCES career(id),
+    FOREIGN KEY (subject) REFERENCES subject(id)
+);
+
 CREATE TABLE IF NOT EXISTS usuario(
     id VARCHAR(64) PRIMARY KEY,
     name VARCHAR(64) NOT NULL,
     clave VARCHAR(200),
     email VARCHAR(64) NOT NULL,
-    type SMALLINT NOT NULL,
-    is_active BOOLEAN NOT NULL, --En caso de que un lab se disuelva o salga del sistema
+    type SMALLINT NOT NULL, --0000 departamento, 1111 estudiante, 2222 profesor, 3333 laboratorio, 4444 laboratorio master*/
+    is_active SMALLINT NOT NULL, --0 inactive, 1 active, 2 banned
+    is_verified BOOLEAN NOT NULL, --0 no, 1 si
     chief VARCHAR(64) NOT NULL, --Labf es su propio jefe
     FOREIGN KEY (chief) REFERENCES usuario(id)
 );
@@ -71,7 +91,7 @@ CREATE TABLE IF NOT EXISTS room_request(
     trimester_id VARCHAR(12) NOT NULL,
     FOREIGN KEY (trimester_id) REFERENCES trimester(id),
     date DATE NOT NULL,
-    status CHAR(1) --A(aprobado),R(rechazado),E(espera)
+    status CHAR(1) --A(aprobado),R(rechazado),P(pendiente)
 );
 
 CREATE TABLE IF NOT EXISTS room_item(
@@ -118,6 +138,7 @@ CREATE TABLE IF NOT EXISTS reservation_request(
     FOREIGN KEY (subject_id) REFERENCES subject(id),
     send_time TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     trimester_id VARCHAR(12),
+    FOREIGN KEY (trimester_id) REFERENCES trimester(id),
     reason VARCHAR(128),
     material_needed VARCHAR(512),
     quantity SMALLINT,
@@ -132,4 +153,21 @@ CREATE TABLE IF NOT EXISTS reservation_request_schedule(
     day VARCHAR(9),
     hour SMALLINT,
     week SMALLINT
+);
+
+-- Reservas Especiales
+CREATE TABLE IF NOT EXISTS special_reservations(
+    id BIGSERIAL PRIMARY KEY,
+    requester_id VARCHAR(64),
+    FOREIGN KEY (requester_id) REFERENCES usuario(id),
+    laboratory VARCHAR(64),
+    FOREIGN KEY (laboratory) REFERENCES usuario(id),
+    contact_name VARCHAR(64) NOT NULL,
+    contact_email VARCHAR(64) NOT NULL,
+    reservation_day DATE NOT NULL,
+    reservation_hour VARCHAR(32),
+    amount_people SMALLINT,
+    observations TEXT,
+    trimester_id VARCHAR(12),
+    FOREIGN KEY (trimester_id) REFERENCES trimester(id)
 );

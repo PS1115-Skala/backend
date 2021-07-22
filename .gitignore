@@ -177,4 +177,11 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Configuracion de Container VsCode
+.devcontainer
+
+# Temporary csv files
+src/services/metricsReport/csvFiles/
+
+
 # End of https://www.gitignore.io/api/node,linux,macos,windows

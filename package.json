@@ -8,9 +8,11 @@
     "url": "https://github.com/PS1115-Skala/backend"
   },
   "scripts": {
-    "dev": "DEBUG=app:* nodemon src/index",
+    "dev": "DEBUG=app:* nodemon --inspect=0.0.0.0 src/index",
     "start": "NODE_ENV=production node src/index",
-    "test": "mocha src/tests/ --exit",
+    "test:integration": "mocha ./src/tests/**/*.test.js --exit",
+    "test:unit": "./node_modules/.bin/mocha **/__tests__/**/*.test.js --exit",
+    "test": "npm run test:unit && npm run test:integration",
     "dtest": "docker-compose up -d postgresdb && docker-compose run --rm backend npm run test ; docker-compose down --volumes"
   },
   "keywords": [
@@ -24,11 +26,14 @@
   "license": "ISC",
   "dependencies": {
     "@hapi/boom": "^9.0.0",
+    "babel-eslint": "^10.1.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "isomorphic-fetch": "^3.0.0",
+    "joi": "^17.4.0",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.24.0",
     "pg": "^7.18.2",
@@ -42,6 +47,7 @@
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
+    "fetch-mock": "^9.11.0",
     "husky": "^4.2.3",
     "lint-staged": "^10.0.7",
     "mocha": "^8.1.1",

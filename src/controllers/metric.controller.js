@@ -1,5 +1,7 @@
 const MetricsService = require('../services/metrics.service');
+const TrimestersService = require('../services/trimesters.service');
 const metricsService = new MetricsService();
+const trimestersService = new TrimestersService();
 
 /*
     Rules To Api Rest
@@ -14,12 +16,25 @@ const metricsService = new MetricsService();
     Controller
 */
 class MetricsController {
+  
+  async getStandardMetrics(req, res) {
+    const { initTrim, endTrim, labFilter } = req.query
+    const { start: initDate } = await trimestersService.getSpecificTrim(initTrim);
+    const { finish: endDate } = await trimestersService.getSpecificTrim(endTrim);
+    const reservationsRequests = await metricsService.getReservationsRequests({endDate, initDate, labFilter});
+    if (reservationsRequests.length){
+      const formattedMetrics = await metricsService.getFormattedMetrics(reservationsRequests);
+      return res.status(200).json(formattedMetrics);
+    }
+    return res.status(204).end();
+  }
+
   // GET room usages: number of students that used until now
   async roomUsage(req, res, next) {
     const room_id = req.params.RoomId;
     const fechaInicio = req.body.fechaInicio;
     if (fechaInicio == undefined) {
-      res.status(403).json({ error: `No se ha introducido ninguna fecha` });
+      res.status(400).json({ error: `No se ha introducido ninguna fecha` });
       return;
     }
     try {
@@ -72,7 +87,7 @@ class MetricsController {
         .status(200)
         .send(`Existen un total de ${result} reservas en el sistema`);
     } else {
-      res.status(403).json({ error: `El filtro seleccionado no es valido` });
+      res.status(400).json({ error: `El filtro seleccionado no es valido` });
     }
   }
 
@@ -82,7 +97,7 @@ class MetricsController {
     const trimestreInicio = req.body.trimestreInicio;
     const trimestreFinal = req.body.trimestreFinal;
     if (trimestreInicio == undefined || trimestreFinal == undefined) {
-      res.status(403).json({
+      res.status(400).json({
         error: `No se ha introducido el trimestre inicio o trimestre final`
       });
       return;

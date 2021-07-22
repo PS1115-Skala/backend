@@ -1,50 +1,71 @@
 const pool = require('../data_base/pgConnect');
+const { USER_TYPES, USER_TYPE_NUMBERS } = require('../utils/constants');
 
 // Se importan metodos de autenticacion
 const Auth = require('../authentication/auth.js');
 const auth = new Auth();
-
 class UsersService {
   async getUser(userId) {
-    let query = `SELECT * FROM usuario WHERE id = '${userId}'`;
-    const requestsUsers = await pool.query(query);
-    return requestsUsers || [];
+    const query = `SELECT id, name, email, type, is_active, is_verified, chief FROM usuario WHERE id = $1`;
+    const requestsUsers = await pool.query(query, [userId]);
+    return requestsUsers;
   }
 
   async getUsers() {
-    let query = `SELECT * FROM usuario`;
+    const query = `SELECT id, name, email, type, is_active, is_verified, chief FROM usuario`;
     const requestsUsers = await pool.query(query);
-    return requestsUsers || [];
+    return requestsUsers;
   }
 
   async getAdminUsers() {
-    let query = `SELECT * FROM usuario WHERE type = 3333`;
+    const query = `SELECT id, name, email, type, is_active, is_verified, chief FROM usuario WHERE type = '3333'`;
     const requestsUsers = await pool.query(query);
-    return requestsUsers || [];
+    return requestsUsers;
   }
 
   async getProfesor() {
-    let query = `SELECT * FROM usuario WHERE type = 1111 or type = 2222`;
+    const query = `SELECT id, name, email, type, is_active, is_verified, chief FROM usuario WHERE type = '2222'`;
     const profesores = await pool.query(query);
-    return profesores || [];
+    return profesores;
   }
 
-  async registerUser(usbId, name, email, type, chief, clave) {
+  async registerUser(usbId, name, email, type, clave) {
+    let query;
+    let values;
+    if (clave != null) {
+      const claveEncrypt = await auth.encryptPassword(clave);
+      query = `INSERT into usuario (id, name, clave, email, type, is_active, is_verified, chief)
+        values($1, $2, $3, $4, $5, 1, true, $6)`;
+      values = [usbId, name, claveEncrypt, email, type, usbId];
+    } else {
+      query = `INSERT into usuario (id,name, email, type, is_active, is_verified, chief)
+        values($1, $2, $3, $4, 0, false, $5)`;
+      values = [usbId, name, email, type, usbId];
+    }
+    await pool.query(query, values);
+  }
+
+  async verifyUser(usbId, clave) {
     const claveEncrypt = await auth.encryptPassword(clave);
+    const query = `UPDATE usuario SET clave = $1, is_active = '1', is_verified='true' WHERE id = $2`;
+    const values = [claveEncrypt, usbId];
+    const user_updated = await pool.query(query, values);
+    return user_updated;
+  }
 
-    let query = `INSERT into usuario (id,name, email, type, is_active,chief, clave)
-        values('${usbId}', '${name}', '${email}', ${type}, 'true', '${chief}', '${claveEncrypt}')`;
-
-    await pool.query(query);
-
-    const token = await auth.createToken(usbId, type);
-
-    return token;
+  async updateUser(id, data) {
+    try {
+      const { query, values } = this.updateQueryUser(id, data);
+      const user_updated = await pool.query(query, values);
+      return user_updated;
+    } catch (err) {
+      throw new Error('Keys proporcionadas incorrectas.');
+    }
   }
 
   async loginUser(usbId, clave) {
-    let query = `SELECT id, clave, type from usuario where id='${usbId}'`;
-    const login = await pool.query(query);
+    let query = `SELECT id, clave, type from usuario where id=$1`;
+    const login = await pool.query(query, [usbId]);
     const user = login.rows[0];
     if (login.rows < 1) {
       return 0;
@@ -56,9 +77,58 @@ class UsersService {
     if (!validPassword) {
       return 1;
     } else {
-      const token = await auth.createToken(user.id, user.type);
+      const token = await auth.createToken(user.id, user.type, '18000s');
       return token;
     }
+  }
+
+  userTypeToHumanLabel = type => USER_TYPES[type];
+
+  userTypeToNumber = type => USER_TYPE_NUMBERS[type];
+
+  getUserType = (uuid, userType) => {
+    if (userType === 'U' || userType === 'P') {
+      return userType;
+    }
+    if (uuid.includes('labf')) {
+      return 'L';
+    }
+    if (uuid.includes('lab')) {
+      return null;
+    }
+  };
+
+  checkOrCreateUser = async (usbId, name, email, type, clave) => {
+    try {
+      const userExists = await this.getUser(usbId);
+      // El usuario no existe y hay que crearlo
+      if (userExists.rows.length == 0) {
+        await this.registerUser(usbId, name, email, type, clave);
+      } else if (userExists.rows[0].is_verified == true) {
+        throw new Error('Usuario ya se encuentra activo');
+      }
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  updateQueryUser(id, update) {
+    let query = ['UPDATE usuario'];
+    let set = [];
+    let values = [];
+
+    query.push('SET');
+
+    Object.keys(update).forEach((key, index) => {
+      set.push(`${key} = $${index + 1}`);
+      values.push(update[key]);
+    });
+
+    query.push(set.join(', '));
+    query.push(`WHERE id = $${Object.keys(update).length + 1}`);
+    values.push(id);
+
+    return { query: query.join(' '), values: values };
   }
 }
 

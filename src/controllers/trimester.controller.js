@@ -20,9 +20,17 @@ const boom = require('@hapi/boom');
     Controller
 */
 class TrimesterController {
-  /*
-        /GET
-    */
+
+  // Get all existents trimesters 
+  async getAllTrimesters(req, res, next) {
+    const allTrimesters = await trimestersService.getExistentTrim();
+    try {
+      allTrimesters.length ? res.status(200).send(allTrimesters) : res.status(204).end();
+    } catch (error) {
+      res.status(500).json({ error: `Hubo un error en el servidor` });
+      next(error)
+    }
+  }
 
   //  This endpoint is only to test and show where is the next trimester
   async autoUpdateTrim(req, res, next) {
@@ -62,9 +70,9 @@ class TrimesterController {
         } else if (10 <= lasTrimMonth) {
           await trimestersService.createTrim(
             'ENE-MAR' +
-              moment(lasTrim)
-                .add(1, 'year')
-                .year(),
+            moment(lasTrim)
+              .add(1, 'year')
+              .year(),
             moment(lasTrim)
               .add(1, 'week')
               .add(3, 'day'),
@@ -125,7 +133,7 @@ class TrimesterController {
         finish
       );
       if (!response) {
-        res.status(403).json({ message: 'Fecha Invalida' });
+        res.status(400).json({ message: 'Fecha Invalida' });
       } else {
         res.status(200).json({ message: 'Trimestre actualizado' });
       }

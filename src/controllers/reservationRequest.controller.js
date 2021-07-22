@@ -44,16 +44,16 @@ class ReservationRequestController {
   }
 
   // GET schedule of reservation request
-  async getReservationReqSchedule(req, res, next) {
+  async getReservationReqSchedule(req, res) {
     const solicitudId = req.params.solicitudId;
     try {
       const schedule = await reservationRequestService.getScheduleFromRequest(
         solicitudId
       );
-      res.json(schedule);
+      if (schedule.typeWeek != "-1") return res.status(200).json(schedule);
+      return res.status(204).end();
     } catch (err) {
-      res.status(500).json({ error: 'Ocurrio un error en el servidor' });
-      next(err);
+      return res.status(500).json({ error: 'Ocurrio un error en el servidor' });
     }
   }
 
@@ -106,7 +106,7 @@ class ReservationRequestController {
       if (status == 'A') {
         // Existe un horario ya asignado en ese horario que se solicita
         if (checkSchedule.rowCount > 0) {
-          res.status(403).json({
+          res.status(400).json({
             error: `Ya existe una reserva en la sala ${room} con ese horario, Elimine la(s) Reservas en ese horario antes de aceptar esta solicitud`
           });
           return;
@@ -180,11 +180,11 @@ class ReservationRequestController {
       }
       if (!req.body[1]) {
         res
-          .status(403)
+          .status(400)
           .json({ error: 'Debe llenar un horario a solicitar reserva' });
       } else {
         if (isNaN(quantity) || quantity < 0) {
-          res.status(403).json({
+          res.status(400).json({
             error: 'La cantidad de estudiantes debe ser un numero positivo'
           });
         }
@@ -229,7 +229,7 @@ class ReservationRequestController {
             id
           );
         } else {
-          res.status(403).json({
+          res.status(400).json({
             error: 'No se esta especificando un tipo de semana correctamente'
           });
         }
