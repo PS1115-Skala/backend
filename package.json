@@ -35,7 +35,7 @@
     "isomorphic-fetch": "^3.0.0",
     "joi": "^17.4.0",
     "jsonwebtoken": "^8.5.1",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "pg": "^7.18.2",
     "set-interval-async": "1.0.30",
     "swagger-jsdoc": "^4.0.0",
